@@ -1,0 +1,651 @@
+@import "tailwindcss";
+
+/*
+ * Identidade "clube de carteado": feltro verde, papel cartão, latão e tinta.
+ * Nada de brilho neon nem gradiente dourado: a referência é material impresso,
+ * mesa de jogo e bilhete de rifa.
+ */
+@theme {
+  --color-mesa-950: #04110c;
+  --color-mesa-900: #071a12;
+  --color-mesa-850: #0a2218;
+  --color-mesa-800: #0d2c1f;
+  --color-mesa-700: #113a29;
+  --color-mesa-600: #164a34;
+  --color-mesa-500: #1d6245;
+  --color-mesa-400: #2c8259;
+
+  /* latão envelhecido */
+  --color-ouro-200: #eadcb4;
+  --color-ouro-300: #d8bf80;
+  --color-ouro-400: #c4a052;
+  --color-ouro-500: #a3823a;
+  --color-ouro-600: #7a6128;
+
+  /* papel cartão */
+  --color-creme-50: #f6efdc;
+  --color-creme-100: #ede3c9;
+  --color-creme-300: #c0b699;
+  --color-creme-500: #8a846f;
+
+  --color-papel: #efe5cc;
+  --color-papel-escuro: #e1d3b0;
+  --color-tinta: #18201b;
+  --color-tinta-suave: #4a5048;
+  --color-naipe-vermelho: #b5332f;
+
+  --font-sans: var(--font-franklin);
+  --font-display: var(--font-fraunces);
+  --font-mono: var(--font-plex-mono);
+
+  --ease-saida: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-mola: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+:root {
+  color-scheme: dark;
+  /* Atualizadas pelo componente EfeitosGlobais. */
+  --rolagem: 0;
+  --ponteiro-x: 0;
+  --ponteiro-y: 0;
+}
+
+/*
+ * Tipografia fluida: em telas largas tudo que usa rem cresce junto
+ * (16px até ~1100px de largura, chegando a 20px em monitores 2K/4K).
+ */
+html {
+  font-size: clamp(16px, 0.36vw + 12px, 20px);
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  interpolate-size: allow-keywords;
+}
+
+body {
+  background-color: var(--color-mesa-800);
+  color: var(--color-creme-100);
+}
+
+/* Reveals laterais não podem criar rolagem horizontal (o Chrome no celular ignora o clip do body). */
+section {
+  overflow-x: clip;
+}
+
+::selection {
+  background-color: var(--color-ouro-300);
+  color: var(--color-tinta);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ouro-300);
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Peças visuais                                                       */
+/* ------------------------------------------------------------------ */
+
+/* Verso das cartas: losangos de latão sobre vinho. */
+.verso-carta {
+  background-color: #6a1f27;
+  background-image:
+    linear-gradient(
+      45deg,
+      rgba(216, 191, 128, 0.22) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(216, 191, 128, 0.22) 75%
+    ),
+    linear-gradient(
+      45deg,
+      rgba(216, 191, 128, 0.22) 25%,
+      transparent 25%,
+      transparent 75%,
+      rgba(216, 191, 128, 0.22) 75%
+    );
+  background-size: 22% 16%;
+  background-position:
+    0 0,
+    11% 8%;
+  border: 0.12em solid #f6efdc;
+  box-shadow: 0 0.2em 0.5em rgba(0, 0, 0, 0.4);
+}
+
+/* Ruído por cima do fundo (o elemento precisa ser relative). */
+.textura-feltro::after,
+.textura-papel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.textura-papel::after {
+  opacity: 0.9;
+  mix-blend-mode: multiply;
+}
+
+/* Seções em papel cartão: tinta escura sobre creme. */
+.papel {
+  position: relative;
+  background-color: var(--color-papel);
+  color: var(--color-tinta);
+}
+
+/* Fio duplo de latão, como o friso de uma mesa. */
+@utility friso {
+  border-top: 1px solid rgba(196, 160, 82, 0.55);
+  box-shadow: 0 3px 0 -2px rgba(196, 160, 82, 0.35);
+}
+
+/* Linha pontilhada do cardápio (entre o nome e o detalhe). */
+@utility pontilhado {
+  flex: 1;
+  min-width: 1.5rem;
+  border-bottom: 2px dotted currentColor;
+  opacity: 0.35;
+  translate: 0 -0.3em;
+}
+
+/* Rótulo em mono, caixa alta, espaçado: como impresso em bilhete. */
+@utility rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Contêiner da página: usa a largura da tela com margens proporcionais. */
+@utility conteiner {
+  width: 100%;
+  max-width: 1760px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4.5vw, 6rem);
+}
+
+/* Destaque em latão (sem gradiente nem brilho). */
+@utility texto-ouro {
+  color: var(--color-ouro-300);
+}
+
+/* Picote do convite: semicírculos recortados nas bordas do canhoto. */
+.picote {
+  --furo: 14px;
+  mask:
+    radial-gradient(circle var(--furo) at var(--x-picote, 72%) 0, transparent 98%, #000) top / 100%
+      51% no-repeat,
+    radial-gradient(circle var(--furo) at var(--x-picote, 72%) 100%, transparent 98%, #000) bottom /
+      100% 51% no-repeat;
+}
+
+/* Carimbo: aparece "batendo" no papel quando a peça é revelada. */
+.carimbo {
+  opacity: 0;
+  rotate: -11deg;
+}
+[data-visivel] .carimbo {
+  animation: carimbar 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2) 0.5s both;
+}
+@media (scripting: none) {
+  .carimbo {
+    opacity: 0.85;
+  }
+}
+
+@keyframes carimbar {
+  0% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+  55% {
+    opacity: 0.95;
+    transform: scale(0.94);
+  }
+  100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Animações                                                           */
+/* ------------------------------------------------------------------ */
+
+@property --progresso {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes distribuir {
+  from {
+    opacity: 0;
+    transform: translate(var(--de-x, 0), var(--de-y, 0)) rotate(-200deg) scale(0.5);
+  }
+  70% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ir-ao-pote {
+  to {
+    opacity: 0;
+    transform: translate(var(--de-x, 0), var(--de-y, 0)) scale(0.6);
+  }
+}
+
+@keyframes virar {
+  from {
+    transform: rotateY(180deg);
+  }
+  to {
+    transform: rotateY(0deg);
+  }
+}
+
+@keyframes respirar {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3%);
+  }
+}
+
+@keyframes contagem {
+  from {
+    --progresso: 100%;
+  }
+  to {
+    --progresso: 0%;
+  }
+}
+
+@keyframes balao {
+  0% {
+    opacity: 0;
+    transform: translateY(0.5em) scale(0.6);
+  }
+  12% {
+    opacity: 1;
+    transform: none;
+  }
+  80% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-0.4em);
+  }
+}
+
+@keyframes flutuar {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--giro, 0deg));
+  }
+  50% {
+    transform: translateY(-14px) rotate(calc(var(--giro, 0deg) + 3deg));
+  }
+}
+
+@keyframes subir-naipe {
+  from {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--opacidade, 0.4);
+  }
+  85% {
+    opacity: var(--opacidade, 0.4);
+  }
+  to {
+    transform: translateY(calc(-1 * var(--subida, 110vh))) rotate(var(--giro, 180deg));
+    opacity: 0;
+  }
+}
+
+@keyframes letreiro {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes reflexo {
+  0%,
+  100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0% 0;
+  }
+}
+
+@keyframes girar-ficha {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes pacote {
+  from {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: 1;
+  }
+  to {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes tracejado {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@keyframes aparecer-mensagem {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes tremer {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-5px);
+  }
+  40%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes abrir-leque {
+  from {
+    transform: rotate(0deg) translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(var(--angulo, 0deg)) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@utility animar-surgir {
+  animation: surgir 0.5s var(--ease-mola) both;
+}
+
+@utility animar-distribuir {
+  animation: distribuir 0.7s var(--ease-saida) both;
+}
+
+@utility animar-virar {
+  transform: rotateY(180deg);
+  animation: virar 0.7s var(--ease-saida) both;
+}
+
+@utility animar-respirar {
+  animation: respirar 4.5s ease-in-out infinite;
+}
+
+@utility animar-fichas-pote {
+  animation:
+    surgir 0.45s var(--ease-mola) both,
+    ir-ao-pote 0.55s ease-in forwards;
+}
+
+@utility animar-balao {
+  animation: balao 5s ease-out both;
+}
+
+@utility animar-flutuar {
+  animation: flutuar 7s ease-in-out infinite;
+}
+
+@utility animar-letreiro {
+  animation: letreiro 40s linear infinite;
+}
+
+@utility animar-girar-ficha {
+  animation: girar-ficha 6s linear infinite;
+}
+
+@utility animar-mensagem {
+  animation: aparecer-mensagem 0.35s var(--ease-saida) both;
+}
+
+@utility animar-tremer {
+  animation: tremer 0.4s ease-in-out;
+}
+
+@utility animar-girar {
+  animation: girar 0.8s linear infinite;
+}
+
+/* Anel de tempo da vez do jogador: um conic-gradient que esvazia. */
+.anel-tempo {
+  background: conic-gradient(var(--color-ouro-300) var(--progresso), rgba(240, 212, 138, 0.12) 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 0.45cqw), #000 calc(100% - 0.4cqw));
+  animation:
+    surgir 0.3s ease-out 5s both,
+    contagem 12s linear 5s infinite;
+}
+
+/* Paralaxe leve guiada pelo ponteiro. */
+[data-paralaxe] {
+  translate: calc(var(--ponteiro-x) * var(--forca, 12px))
+    calc(var(--ponteiro-y) * var(--forca, 12px));
+  transition: translate 0.6s var(--ease-saida);
+}
+
+/* Barra de progresso da rolagem. */
+.barra-rolagem {
+  transform-origin: 0 50%;
+  transform: scaleX(var(--rolagem));
+}
+
+/* Cabeçalho ganha fundo depois que a página rola. */
+[data-rolou="true"] .cabecalho-site {
+  background-color: var(--color-mesa-900);
+  border-color: rgba(196, 160, 82, 0.35);
+}
+
+/* FAQ: abre e fecha com altura animada onde o navegador suporta ::details-content. */
+.duvida::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition:
+    block-size 0.4s var(--ease-saida),
+    content-visibility 0.4s allow-discrete;
+}
+.duvida[open]::details-content {
+  block-size: auto;
+}
+.duvida summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Revelar ao rolar: elementos com data-revelar entram quando visíveis */
+/* ------------------------------------------------------------------ */
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-revelar] {
+    transition:
+      opacity 0.8s var(--ease-saida),
+      transform 0.8s var(--ease-saida),
+      filter 0.8s var(--ease-saida);
+    transition-delay: var(--atraso, 0ms);
+  }
+  [data-revelar]:not([data-visivel]) {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(6px);
+  }
+  [data-revelar="esquerda"]:not([data-visivel]) {
+    transform: translateX(-36px);
+  }
+  [data-revelar="direita"]:not([data-visivel]) {
+    transform: translateX(36px);
+  }
+  [data-revelar="zoom"]:not([data-visivel]) {
+    transform: scale(0.92);
+  }
+  /* Cartas do "como funciona" viram ao aparecer. */
+  [data-revelar="virar"] {
+    transition-duration: 1s;
+  }
+  [data-revelar="virar"]:not([data-visivel]) {
+    transform: perspective(900px) rotateY(-90deg);
+    filter: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Transições entre páginas (View Transitions API via <ViewTransition>) */
+/* ------------------------------------------------------------------ */
+
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-old(.nav-forward) {
+  --deslocamento: -60px;
+  animation:
+    150ms ease-in both vt-fade reverse,
+    400ms ease-in-out both vt-slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --deslocamento: 60px;
+  animation:
+    210ms ease-out 150ms both vt-fade,
+    400ms ease-in-out both vt-slide;
+}
+::view-transition-old(.nav-back) {
+  --deslocamento: 60px;
+  animation:
+    150ms ease-in both vt-fade reverse,
+    400ms ease-in-out both vt-slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --deslocamento: -60px;
+  animation:
+    210ms ease-out 150ms both vt-fade,
+    400ms ease-in-out both vt-slide;
+}
+
+/* O cartão de acesso "morfa" entre /entrar e /resgatar-convite. */
+::view-transition-group(.morph) {
+  animation-duration: 450ms;
+  animation-timing-function: var(--ease-saida);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: vt-via-blur;
+}
+
+::view-transition-group(cabecalho) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(cabecalho) {
+  display: none;
+}
+::view-transition-new(cabecalho) {
+  animation: none;
+}
+
+@keyframes vt-fade {
+  from {
+    filter: blur(3px);
+    opacity: 0;
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+@keyframes vt-slide {
+  from {
+    translate: var(--deslocamento);
+  }
+  to {
+    translate: 0;
+  }
+}
+@keyframes vt-via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Movimento reduzido: mantém o conteúdo, remove o movimento           */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+  [data-paralaxe] {
+    translate: none;
+  }
+}
