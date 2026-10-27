@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { nomeSchema } from "./nome";
 
 /**
  * Schemas dos formulários de acesso (login e resgate de convite).
@@ -52,6 +53,7 @@ export const loginSchema = z.object({
 export const resgateConviteSchema = z
   .object({
     codigo: codigoConviteSchema,
+    nome: nomeSchema,
     email: emailSchema,
     senha: senhaSchema,
     confirmacaoSenha: z.string({ error: "Confirme sua senha." }),

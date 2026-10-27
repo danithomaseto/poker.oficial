@@ -148,7 +148,14 @@ export function avaliar(cartas: readonly Carta[]): number {
   }
 
   maioresDaMascara(mascara, 5, auxiliar);
-  return compor(Categoria.CartaAlta, auxiliar[0], auxiliar[1], auxiliar[2], auxiliar[3], auxiliar[4]);
+  return compor(
+    Categoria.CartaAlta,
+    auxiliar[0],
+    auxiliar[1],
+    auxiliar[2],
+    auxiliar[3],
+    auxiliar[4],
+  );
 }
 
 export function categoriaDe(pontuacao: number): Categoria {

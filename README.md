@@ -3,8 +3,9 @@
 Mesa privada de Texas Hold'em No-Limit para um grupo fechado de amigos, direto no navegador.
 Entrada só por convite, fichas 100% virtuais, voz no Discord por fora.
 
-> **Estado atual:** só o site público está pronto (`/`, `/entrar`, `/resgatar-convite`).
-> Contas, convites e o jogo vêm nas próximas fases. Veja [`docs/requirements.md`](docs/requirements.md).
+> **Estado atual:** site público, **treino offline contra bots** (`/treino`, do Fácil ao Extremo),
+> contas por convite, lobby com carteirinha e **painel do dono** (`/admin`). Mesas online vêm depois.
+> Para ativar as contas, siga [`docs/supabase.md`](docs/supabase.md). Progresso em [`docs/progresso.md`](docs/progresso.md).
 
 ## Rodando localmente
 
@@ -27,11 +28,17 @@ O site abre em http://localhost:3000.
 | `pnpm test` | Testes (Vitest) |
 | `pnpm format` | Prettier |
 
-Não há variáveis de ambiente nesta etapa (veja [`.env.example`](.env.example)).
+Sem variáveis de ambiente o site roda sem contas (o treino fica aberto). Para contas e admin, veja
+[`.env.example`](.env.example) e [`docs/supabase.md`](docs/supabase.md).
 
 ## Estrutura
 
 ```text
+packages/
+  poker-engine/     regras puras de Texas Hold'em, avaliador, side pots (com testes)
+  bots/             bots fácil, médio, difícil e extremo
+supabase/
+  migrations/       tabelas, RLS e funções (convites, perfis, moedas, admin)
 apps/
   web/              Next.js 16 (App Router), React 19, Tailwind v4
     src/app/        rotas: (site) = página inicial, (acesso) = entrar e resgatar convite

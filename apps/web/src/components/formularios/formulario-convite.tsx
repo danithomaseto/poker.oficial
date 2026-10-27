@@ -23,6 +23,17 @@ export function FormularioConvite() {
           dica="Quem te convidou passa o código. Ele vale uma vez só."
         />
         <Campo
+          rotulo="Nome na mesa"
+          name="nome"
+          autoComplete="nickname"
+          placeholder="Como a galera te chama"
+          maxLength={20}
+          required
+          defaultValue={estado.valores?.nome}
+          erros={estado.erros?.nome}
+          dica="De 3 a 20 caracteres. É o que aparece na sua carteirinha e na mesa."
+        />
+        <Campo
           rotulo="Email"
           name="email"
           type="email"

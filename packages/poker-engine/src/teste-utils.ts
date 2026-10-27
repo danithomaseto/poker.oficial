@@ -29,7 +29,14 @@ export function montarBaralho(maos: string[], board: string, botao: number): Car
 
 export function entrada(
   fichas: number[],
-  opcoes: { botao?: number; sb?: number; bb?: number; ante?: number; maos?: string[]; board?: string } = {},
+  opcoes: {
+    botao?: number;
+    sb?: number;
+    bb?: number;
+    ante?: number;
+    maos?: string[];
+    board?: string;
+  } = {},
 ): EntradaMao {
   const botao = opcoes.botao ?? 0;
   return {
@@ -37,7 +44,9 @@ export function entrada(
     numero: 1,
     botao,
     jogadores: fichas.map((f, i) => ({ id: `j${i}`, nome: `Jogador ${i}`, assento: i, fichas: f })),
-    baralho: opcoes.maos ? montarBaralho(opcoes.maos, opcoes.board ?? "", botao) : baralhoOrdenado(),
+    baralho: opcoes.maos
+      ? montarBaralho(opcoes.maos, opcoes.board ?? "", botao)
+      : baralhoOrdenado(),
   };
 }
 

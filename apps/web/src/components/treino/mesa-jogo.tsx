@@ -140,7 +140,14 @@ export function MesaJogo({ mesa }: { mesa: MesaTreino }) {
     potePago.current = visao.numero;
     const novos = resultado.ganhos.flatMap((ganho, i) =>
       ganho > 0
-        ? [{ id: contador.current++, de: geoRef.current.posPote, para: geoRef.current.posAssento(i), valor: ganho }]
+        ? [
+            {
+              id: contador.current++,
+              de: geoRef.current.posPote,
+              para: geoRef.current.posAssento(i),
+              valor: ganho,
+            },
+          ]
         : [],
     );
     setVoos((v) => [...v, ...novos]);
@@ -190,7 +197,8 @@ export function MesaJogo({ mesa }: { mesa: MesaTreino }) {
             <div
               className="textura-feltro relative h-full w-full rounded-[50%]"
               style={{
-                background: "radial-gradient(ellipse 65% 60% at 50% 38%, #217a52 0%, #145a3c 45%, #0b3524 100%)",
+                background:
+                  "radial-gradient(ellipse 65% 60% at 50% 38%, #217a52 0%, #145a3c 45%, #0b3524 100%)",
                 boxShadow: `inset 0 0 ${u * 5}px rgba(0,0,0,0.65), 0 0 0 ${u * 0.4}px #0a0705`,
               }}
             >
@@ -208,8 +216,14 @@ export function MesaJogo({ mesa }: { mesa: MesaTreino }) {
           {visao ? (
             <>
               {/* Fase + pote */}
-              <div className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center" style={px(posPote)}>
-                <span className="rotulo text-ouro-200/70" style={{ fontSize: Math.max(10, u * 1.9) }}>
+              <div
+                className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center"
+                style={px(posPote)}
+              >
+                <span
+                  className="rotulo text-ouro-200/70"
+                  style={{ fontSize: Math.max(10, u * 1.9) }}
+                >
                   {FASES[visao.fase]}
                 </span>
                 {!resultado && visao.pote > 0 && (
@@ -245,7 +259,11 @@ export function MesaJogo({ mesa }: { mesa: MesaTreino }) {
                     <span
                       key={i}
                       className="rounded-[0.16em] border border-white/[0.07] bg-black/10"
-                      style={{ width: cartaBoard, aspectRatio: "5 / 7", fontSize: cartaBoard * 0.3 }}
+                      style={{
+                        width: cartaBoard,
+                        aspectRatio: "5 / 7",
+                        fontSize: cartaBoard * 0.3,
+                      }}
                     />
                   );
                 })}
@@ -265,13 +283,25 @@ export function MesaJogo({ mesa }: { mesa: MesaTreino }) {
                   {resultado.potes.map((p, i) => {
                     const mostrada = resultado.maos.find((m) => m.indice === p.ganhadores[0]);
                     return (
-                      <p key={i} className="leading-snug whitespace-nowrap text-creme-50" style={{ fontSize: Math.max(12, u * 2.4) }}>
+                      <p
+                        key={i}
+                        className="leading-snug whitespace-nowrap text-creme-50"
+                        style={{ fontSize: Math.max(12, u * 2.4) }}
+                      >
                         <strong className="font-semibold text-ouro-200">
-                          {p.ganhadores.map((gi) => (gi === indiceVoce ? "Você" : visao.jogadores[gi]!.nome)).join(" e ")}
+                          {p.ganhadores
+                            .map((gi) => (gi === indiceVoce ? "Você" : visao.jogadores[gi]!.nome))
+                            .join(" e ")}
                         </strong>{" "}
-                        {p.ganhadores.length > 1 ? "dividem" : p.ganhadores[0] === indiceVoce ? "leva" : "leva"}{" "}
+                        {p.ganhadores.length > 1
+                          ? "dividem"
+                          : p.ganhadores[0] === indiceVoce
+                            ? "leva"
+                            : "leva"}{" "}
                         {formatarFichas(p.valor)}
-                        {mostrada && <span className="text-creme-300"> · {mostrada.descricao}</span>}
+                        {mostrada && (
+                          <span className="text-creme-300"> · {mostrada.descricao}</span>
+                        )}
                         {i > 0 && <span className="text-creme-500"> (pote lateral)</span>}
                       </p>
                     );
@@ -324,7 +354,9 @@ export function MesaJogo({ mesa }: { mesa: MesaTreino }) {
                   u={u}
                   naVez={visao.vez === j.indice && !resultado}
                   pensando={pensando === j.indice}
-                  blind={j.indice === visao.smallBlind ? "SB" : j.indice === visao.bigBlind ? "BB" : null}
+                  blind={
+                    j.indice === visao.smallBlind ? "SB" : j.indice === visao.bigBlind ? "BB" : null
+                  }
                   ganho={resultado ? resultado.ganhos[j.indice]! : 0}
                   encerrada={!!resultado}
                   numeroMao={visao.numero}
@@ -342,7 +374,13 @@ export function MesaJogo({ mesa }: { mesa: MesaTreino }) {
                   key={v.id}
                   aria-hidden
                   className="voo-fichas pointer-events-none absolute -translate-x-1/2 -translate-y-1/2"
-                  style={{ ...px(v.de), "--dx": `${v.para.x - v.de.x}px`, "--dy": `${v.para.y - v.de.y}px` } as CSSProperties}
+                  style={
+                    {
+                      ...px(v.de),
+                      "--dx": `${v.para.x - v.de.x}px`,
+                      "--dy": `${v.para.y - v.de.y}px`,
+                    } as CSSProperties
+                  }
                 >
                   <PilhaFichas valor={v.valor} tamanho={Math.max(10, u * 2.6)} />
                 </span>
@@ -407,7 +445,10 @@ function Assento({
   const dirX = centro.x - posicao.x;
   const dirY = centro.y - posicao.y;
   const dist = Math.hypot(dirX, dirY) || 1;
-  const cartasOponente = { x: posicao.x + (dirX / dist) * avatar * 0.85, y: posicao.y + (dirY / dist) * avatar * 0.85 };
+  const cartasOponente = {
+    x: posicao.x + (dirX / dist) * avatar * 0.85,
+    y: posicao.y + (dirY / dist) * avatar * 0.85,
+  };
 
   const acao = j.ultimaAcao && !encerrada ? j.ultimaAcao : null;
   const corAcao =
@@ -422,7 +463,10 @@ function Assento({
       {/* Cartas */}
       {!j.desistiu &&
         (voce ? (
-          <div className="absolute flex -translate-x-1/2 -translate-y-1/2" style={{ ...px(posCartasVoce), gap: u * 0.8, zIndex: 7 }}>
+          <div
+            className="absolute flex -translate-x-1/2 -translate-y-1/2"
+            style={{ ...px(posCartasVoce), gap: u * 0.8, zIndex: 7 }}
+          >
             {j.cartas?.map((c, k) => (
               <Carta
                 key={`${numeroMao}-${c}`}
@@ -435,7 +479,10 @@ function Assento({
             ))}
           </div>
         ) : (
-          <div className="absolute flex -translate-x-1/2 -translate-y-1/2" style={px(cartasOponente)}>
+          <div
+            className="absolute flex -translate-x-1/2 -translate-y-1/2"
+            style={px(cartasOponente)}
+          >
             {j.cartas
               ? j.cartas.map((c, k) => (
                   <Carta
@@ -444,7 +491,10 @@ function Assento({
                     largura={`${cartaOponente * 1.25}px`}
                     virar
                     atraso={k * 120}
-                    style={{ rotate: `${k === 0 ? -6 : 6}deg`, marginLeft: k ? -cartaOponente * 0.3 : 0 }}
+                    style={{
+                      rotate: `${k === 0 ? -6 : 6}deg`,
+                      marginLeft: k ? -cartaOponente * 0.3 : 0,
+                    }}
                   />
                 ))
               : [0, 1].map((k) => (
@@ -477,9 +527,17 @@ function Assento({
         <div className="relative" style={{ width: avatar, height: avatar, fontSize: avatar / 10 }}>
           <div
             className={`size-full overflow-hidden rounded-full border-[0.25em] transition-shadow duration-500 ${
-              naVez ? "anel-vez border-ouro-300" : ganho > 0 ? "border-ouro-200" : "border-[#1a1410]"
+              naVez
+                ? "anel-vez border-ouro-300"
+                : ganho > 0
+                  ? "border-ouro-200"
+                  : "border-[#1a1410]"
             }`}
-            style={ganho > 0 ? { boxShadow: `0 0 ${u * 4}px ${u * 0.6}px rgba(234,220,180,0.55)` } : undefined}
+            style={
+              ganho > 0
+                ? { boxShadow: `0 0 ${u * 4}px ${u * 0.6}px rgba(234,220,180,0.55)` }
+                : undefined
+            }
           >
             {lugar && <Avatar aparencia={lugar.aparencia} className="size-full scale-110" />}
           </div>
@@ -504,7 +562,9 @@ function Assento({
               {blind}
             </span>
           )}
-          <span className="max-w-[9em] truncate font-semibold text-creme-50">{voce ? "Você" : j.nome}</span>
+          <span className="max-w-[9em] truncate font-semibold text-creme-50">
+            {voce ? "Você" : j.nome}
+          </span>
           <span className="font-mono text-ouro-200 tabular-nums" style={{ fontSize: fonteFichas }}>
             {j.allIn && !encerrada ? "ALL-IN" : formatarFichas(j.fichas)}
           </span>

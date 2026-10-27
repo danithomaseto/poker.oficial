@@ -125,7 +125,16 @@ describe("fim da mão", () => {
   });
 
   it("showdown revela as mãos de quem chegou até o fim", () => {
-    const e = jogar(iniciar([1000, 1000], { botao: 0 }), [pagar, passar, passar, passar, passar, passar, passar, passar]);
+    const e = jogar(iniciar([1000, 1000], { botao: 0 }), [
+      pagar,
+      passar,
+      passar,
+      passar,
+      passar,
+      passar,
+      passar,
+      passar,
+    ]);
     expect(e.fase).toBe("encerrada");
     const visao = projetarParaJogador(e, "espectador");
     expect(visao.jogadores.every((j) => j.cartas !== null)).toBe(true);
@@ -138,7 +147,13 @@ describe("side pots", () => {
 
   it("3 all-ins de tamanhos diferentes", () => {
     const e = todosAllIn(
-      iniciar([100, 300, 600], { botao: 0, sb: 5, bb: 10, maos: ["Ac Ad", "Kc Kd", "Qc Qd"], board }),
+      iniciar([100, 300, 600], {
+        botao: 0,
+        sb: 5,
+        bb: 10,
+        maos: ["Ac Ad", "Kc Kd", "Qc Qd"],
+        board,
+      }),
     );
     // A (100) leva 300, B leva 400 do pote lateral, C recebe de volta os 300 que ninguém cobriu.
     expect(fichasDe(e)).toEqual([300, 400, 300]);
@@ -207,7 +222,9 @@ describe("projeção e reconstrução", () => {
     expect(visao.jogadores[2]!.cartas).toBeNull();
     expect(JSON.stringify(visao)).not.toContain("baralho");
     expect(JSON.stringify(visao)).not.toContain("queimadas");
-    expect(projetarParaJogador(e, "espectador").jogadores.every((j) => j.cartas === null)).toBe(true);
+    expect(projetarParaJogador(e, "espectador").jogadores.every((j) => j.cartas === null)).toBe(
+      true,
+    );
   });
 
   it("a mão é reconstruída pela entrada + ações", () => {

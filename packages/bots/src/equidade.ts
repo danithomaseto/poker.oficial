@@ -46,7 +46,11 @@ export function equidade(
       const minimo = faixas[o] ?? 0;
       let a = sacar();
       let b = sacar();
-      for (let tentativa = 0; minimo > 0 && tentativa < 12 && percentilPreflop(a, b) < minimo; tentativa++) {
+      for (
+        let tentativa = 0;
+        minimo > 0 && tentativa < 12 && percentilPreflop(a, b) < minimo;
+        tentativa++
+      ) {
         // devolve as duas e tenta outra combinação
         topo += 2;
         a = sacar();

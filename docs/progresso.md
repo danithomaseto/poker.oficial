@@ -11,13 +11,23 @@
 - [x] `packages/bots`: níveis fácil, médio, difícil e extremo
 - [x] `/treino`: escolha de mesa (vários níveis e tamanhos) e mesa jogável contra bots
 - [x] Redesign profissional da mesa (assentos, centro, fichas animadas, cartas, dock de ações)
-- [ ] Supabase: migração com perfis, convites, RLS e gatilho de cadastro só com convite
-- [ ] Login, resgate de convite e sair funcionando
-- [ ] `/jogo` (lobby do jogador) e proteção de rotas no `proxy.ts`
-- [ ] Carteirinha (personagem) no primeiro acesso, salva no perfil
-- [ ] `/admin`: gerar, listar e revogar convites; jogadores com carteirinha, moedas e status (sem dado pessoal); banir e desbanir
-- [ ] Guia de configuração do Supabase na Vercel (`docs/supabase.md`)
-- [ ] Lint, tipos, testes e build passando; commit e push
+- [x] Supabase: migração com perfis, convites, RLS e gatilho de cadastro só com convite
+- [x] Login, resgate de convite e sair funcionando
+- [x] `/jogo` (lobby do jogador) e proteção de rotas no `proxy.ts`
+- [x] Carteirinha (personagem) no primeiro acesso, salva no perfil
+- [x] `/admin`: gerar, listar e revogar convites; jogadores com carteirinha, moedas e status (sem dado pessoal); banir e desbanir
+- [x] Guia de configuração do Supabase na Vercel (`docs/supabase.md`)
+- [x] Lint, tipos, testes e build passando; commit e push
+
+## Depende de você
+
+- [ ] Seguir `docs/supabase.md` (criar o banco, rodar a migração, criar a conta de dono, redeploy)
+
+## Próximas etapas sugeridas
+
+- Fase 0 restante: `apps/game-server` (NestJS + Socket.IO), `packages/shared-types`, CI no GitHub Actions
+- Mesas online autoritativas (fase 4), reaproveitando o motor e a mesa já redesenhada
+- Tutorial roteirizado e PWA para o treino funcionar sem internet
 
 ## Concluído
 

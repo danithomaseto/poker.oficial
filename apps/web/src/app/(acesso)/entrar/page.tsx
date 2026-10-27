@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
+import { AvisoMotivo } from "@/components/acesso/aviso-motivo";
 import { EstruturaAcesso } from "@/components/acesso/estrutura-acesso";
 import { c } from "@/components/baralho";
 import { FormularioEntrar } from "@/components/formularios/formulario-entrar";
@@ -43,6 +45,9 @@ export default function PaginaEntrar() {
         </>
       }
     >
+      <Suspense fallback={null}>
+        <AvisoMotivo />
+      </Suspense>
       <FormularioEntrar />
     </EstruturaAcesso>
   );

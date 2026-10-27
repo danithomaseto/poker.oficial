@@ -42,7 +42,7 @@ export function EstruturaAcesso({ faixa, titulo, descricao, painel, rodape, chil
           <div className="textura-papel relative mx-auto w-full max-w-xl overflow-hidden rounded-[8px] bg-creme-50 text-tinta shadow-[0_30px_60px_-20px_rgba(0,0,0,0.75)]">
             <div className="flex items-center justify-between bg-naipe-vermelho px-6 py-2.5 text-creme-50 sm:px-9">
               <span className="rotulo">{faixa}</span>
-              <span className="rotulo opacity-80">prévia · fase 2</span>
+              <span className="rotulo opacity-80">só com convite</span>
             </div>
             <div className="p-6 sm:p-9">
               <h1 className="font-display text-4xl leading-tight font-medium [font-variation-settings:'SOFT'_30,'WONK'_1] sm:text-5xl">

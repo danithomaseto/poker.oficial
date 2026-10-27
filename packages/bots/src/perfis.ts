@@ -29,7 +29,8 @@ export function registrarMao(perfis: Perfis, estadoFinal: EstadoMao): Perfis {
     p.maos++;
     const minhas = estadoFinal.acoes.filter((a) => a.indice === i);
     const preflop = minhas.filter((a) => a.fase === "preflop");
-    if (preflop.some((a) => a.tipo === "pagar" || a.tipo === "aumentar" || a.tipo === "apostar")) p.vpip++;
+    if (preflop.some((a) => a.tipo === "pagar" || a.tipo === "aumentar" || a.tipo === "apostar"))
+      p.vpip++;
     if (preflop.some((a) => a.tipo === "aumentar")) p.pfr++;
     for (const a of minhas) {
       if (a.tipo === "apostar" || a.tipo === "aumentar") p.apostasOuAumentos++;

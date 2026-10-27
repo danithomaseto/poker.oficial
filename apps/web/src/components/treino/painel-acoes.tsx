@@ -28,18 +28,26 @@ export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => 
   const pagar = v?.valorParaPagar ?? 0;
   const valorFinal = faixa ? Math.max(faixa.min, Math.min(faixa.max, Math.round(valor || 0))) : 0;
   const ehAllIn = !!faixa && valorFinal >= faixa.max;
-  const preenchido = faixa && faixa.max > faixa.min ? ((valorFinal - faixa.min) / (faixa.max - faixa.min)) * 100 : 100;
+  const preenchido =
+    faixa && faixa.max > faixa.min
+      ? ((valorFinal - faixa.min) / (faixa.max - faixa.min)) * 100
+      : 100;
 
   const apostar = () => {
     if (!faixa) return;
-    mesa.agir(ehAllIn ? { tipo: "allin" } : { tipo: v?.apostar ? "apostar" : "aumentar", valor: valorFinal });
+    mesa.agir(
+      ehAllIn
+        ? { tipo: "allin" }
+        : { tipo: v?.apostar ? "apostar" : "aumentar", valor: valorFinal },
+    );
   };
   const passarOuPagar = () => mesa.agir(v?.podePassar ? { tipo: "passar" } : { tipo: "pagar" });
 
   useEffect(() => {
     if (!suaVez) return;
     const aoTeclar = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement && e.target.type === "number" && e.key !== "Enter") return;
+      if (e.target instanceof HTMLInputElement && e.target.type === "number" && e.key !== "Enter")
+        return;
       const tecla = e.key.toLowerCase();
       if (tecla === "f") mesa.agir({ tipo: "desistir" });
       else if (tecla === "c") passarOuPagar();
@@ -85,15 +93,17 @@ export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => 
               <span className="font-mono text-xl text-ouro-200 tabular-nums">
                 {formatarFichas(eu?.fichas ?? mesa.lugares[0]!.fichas)}
               </span>
-              {minhaMao && <span className="truncate font-display text-lg text-creme-50">{minhaMao}</span>}
+              {minhaMao && (
+                <span className="truncate font-display text-lg text-creme-50">{minhaMao}</span>
+              )}
             </p>
             <p className="mt-0.5 truncate text-sm text-creme-300" aria-live="polite">
               {mesa.erro ? (
                 <span className="text-[#f39a96]">{mesa.erro}</span>
               ) : odds !== null ? (
                 <>
-                  Pagar {formatarFichas(pagar)} para um pote de {formatarFichas(pote)}: vale se você ganhar{" "}
-                  <strong className="text-creme-50">{odds}%</strong> das vezes
+                  Pagar {formatarFichas(pagar)} para um pote de {formatarFichas(pote)}: vale se você
+                  ganhar <strong className="text-creme-50">{odds}%</strong> das vezes
                 </>
               ) : (
                 <StatusMesa mesa={mesa} />
@@ -106,7 +116,11 @@ export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => 
         {mesa.voceSemFichas ? (
           <div className="flex flex-wrap items-center gap-3 lg:justify-end">
             <p className="font-display text-xl text-creme-50">Você quebrou.</p>
-            <button type="button" className={classesBotao("primario", "lg")} onClick={mesa.recomprar}>
+            <button
+              type="button"
+              className={classesBotao("primario", "lg")}
+              onClick={mesa.recomprar}
+            >
               Recomprar fichas
             </button>
             <button type="button" className={classesBotao("secundario", "lg")} onClick={aoSair}>
@@ -117,7 +131,11 @@ export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => 
           <div className="flex flex-col gap-2.5 lg:items-end">
             {faixa && (
               <div className="flex flex-wrap items-center gap-3">
-                <div role="group" aria-label="Atalhos de valor" className="flex overflow-hidden rounded-[5px] border border-white/15">
+                <div
+                  role="group"
+                  aria-label="Atalhos de valor"
+                  className="flex overflow-hidden rounded-[5px] border border-white/15"
+                >
                   {atalhos.map((a) => (
                     <button
                       key={a.rotulo}
@@ -125,7 +143,9 @@ export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => 
                       onClick={() => setValor(a.valor)}
                       aria-pressed={valorFinal === a.valor}
                       className={`border-r border-white/10 px-3 py-1.5 font-mono text-xs font-medium transition-colors last:border-r-0 ${
-                        valorFinal === a.valor ? "bg-creme-100 text-tinta" : "text-creme-100 hover:bg-white/8"
+                        valorFinal === a.valor
+                          ? "bg-creme-100 text-tinta"
+                          : "text-creme-100 hover:bg-white/8"
                       }`}
                     >
                       {a.rotulo}
@@ -157,7 +177,12 @@ export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => 
               </div>
             )}
             <div className="grid grid-cols-3 gap-2">
-              <BotaoAcao tipo="desistir" atalho="F" onClick={() => mesa.agir({ tipo: "desistir" })} rotulo="Desistir" />
+              <BotaoAcao
+                tipo="desistir"
+                atalho="F"
+                onClick={() => mesa.agir({ tipo: "desistir" })}
+                rotulo="Desistir"
+              />
               <BotaoAcao
                 tipo="neutro"
                 atalho="C"
@@ -180,8 +205,14 @@ export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => 
           </div>
         ) : mesa.aguardandoProxima ? (
           <div className="flex items-center gap-4 lg:justify-end">
-            <p className="text-sm text-creme-300">{mesa.pausado ? "Mesa pausada." : "Próxima mão em instantes"}</p>
-            <button type="button" className={classesBotao("primario", "lg")} onClick={mesa.proximaMao}>
+            <p className="text-sm text-creme-300">
+              {mesa.pausado ? "Mesa pausada." : "Próxima mão em instantes"}
+            </p>
+            <button
+              type="button"
+              className={classesBotao("primario", "lg")}
+              onClick={mesa.proximaMao}
+            >
               Próxima mão
             </button>
           </div>
@@ -205,7 +236,8 @@ function StatusMesa({ mesa }: { mesa: MesaTreino }) {
     const vez = mao.jogadores[mao.vez]!;
     return mao.vez === mesa.indiceVoce ? <>Sua vez.</> : <>Vez de {vez.nome}.</>;
   }
-  if (mesa.indiceVoce >= 0 && mao.jogadores[mesa.indiceVoce]?.desistiu) return <>Você desistiu desta mão.</>;
+  if (mesa.indiceVoce >= 0 && mao.jogadores[mesa.indiceVoce]?.desistiu)
+    return <>Você desistiu desta mão.</>;
   return <>Distribuindo…</>;
 }
 
@@ -227,7 +259,8 @@ function BotaoAcao({
   const estilos = {
     desistir:
       "border-[#5a2a28] bg-transparent text-[#f0a29d] hover:border-[#b5332f] hover:bg-[#b5332f]/12",
-    neutro: "border-[#2f3a34] bg-[#1a221e] text-creme-50 hover:border-creme-100/40 hover:bg-[#222c27]",
+    neutro:
+      "border-[#2f3a34] bg-[#1a221e] text-creme-50 hover:border-creme-100/40 hover:bg-[#222c27]",
     principal:
       "border-ouro-600 border-b-[3px] bg-ouro-300 text-tinta hover:bg-ouro-200 active:border-b",
   } as const;
@@ -238,10 +271,14 @@ function BotaoAcao({
       disabled={desabilitado}
       className={`group/acao relative flex h-14 min-w-[8.5rem] flex-col items-center justify-center rounded-[6px] border px-4 leading-tight font-semibold transition-[background-color,border-color,translate] duration-150 active:translate-y-[2px] disabled:pointer-events-none disabled:opacity-50 sm:min-w-[10rem] ${estilos[tipo]}`}
     >
-      <span className={valor ? "text-[0.78rem] tracking-wide uppercase opacity-80" : "text-base"}>{rotulo}</span>
+      <span className={valor ? "text-[0.78rem] tracking-wide uppercase opacity-80" : "text-base"}>
+        {rotulo}
+      </span>
       {valor && <span className="font-mono text-lg tabular-nums">{valor}</span>}
       {atalho && (
-        <kbd className="absolute top-1 right-1.5 hidden font-mono text-[0.6rem] font-normal opacity-45 lg:block">{atalho}</kbd>
+        <kbd className="absolute top-1 right-1.5 hidden font-mono text-[0.6rem] font-normal opacity-45 lg:block">
+          {atalho}
+        </kbd>
       )}
     </button>
   );

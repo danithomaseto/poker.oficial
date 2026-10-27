@@ -10,7 +10,9 @@ import type { JogadorNaMao, Pote } from "./tipos";
  */
 export function calcularPotes(jogadores: readonly JogadorNaMao[]): Pote[] {
   const niveis = [
-    ...new Set(jogadores.filter((j) => !j.desistiu && j.totalApostado > 0).map((j) => j.totalApostado)),
+    ...new Set(
+      jogadores.filter((j) => !j.desistiu && j.totalApostado > 0).map((j) => j.totalApostado),
+    ),
   ].sort((a, b) => a - b);
 
   const potes: Pote[] = [];
@@ -20,7 +22,9 @@ export function calcularPotes(jogadores: readonly JogadorNaMao[]): Pote[] {
     for (const j of jogadores) {
       valor += Math.max(0, Math.min(j.totalApostado, nivel) - anterior);
     }
-    const elegiveis = jogadores.flatMap((j, i) => (!j.desistiu && j.totalApostado >= nivel ? [i] : []));
+    const elegiveis = jogadores.flatMap((j, i) =>
+      !j.desistiu && j.totalApostado >= nivel ? [i] : [],
+    );
     if (valor > 0) potes.push({ valor, elegiveis });
     anterior = nivel;
   }

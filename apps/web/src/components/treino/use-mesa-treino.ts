@@ -80,9 +80,19 @@ function novoBot(assento: number, nivel: NivelBot, fichas: number, nomesEmUso: S
   };
 }
 
-function montarLugares(config: ConfigTreino, voce: { nome: string; aparencia: AparenciaDemo }): Lugar[] {
+function montarLugares(
+  config: ConfigTreino,
+  voce: { nome: string; aparencia: AparenciaDemo },
+): Lugar[] {
   const lugares: Lugar[] = [
-    { id: ID_VOCE, nome: voce.nome, tipo: "voce", aparencia: voce.aparencia, fichas: config.fichasIniciais, assento: 0 },
+    {
+      id: ID_VOCE,
+      nome: voce.nome,
+      tipo: "voce",
+      aparencia: voce.aparencia,
+      fichas: config.fichasIniciais,
+      assento: 0,
+    },
   ];
   const nomes = new Set<string>();
   for (let i = 1; i <= config.bots; i++) {
@@ -93,9 +103,17 @@ function montarLugares(config: ConfigTreino, voce: { nome: string; aparencia: Ap
   return lugares;
 }
 
-const ATRASO_POR_NIVEL: Record<NivelBot, number> = { facil: 650, medio: 850, dificil: 1050, extremo: 1250 };
+const ATRASO_POR_NIVEL: Record<NivelBot, number> = {
+  facil: 650,
+  medio: 850,
+  dificil: 1050,
+  extremo: 1250,
+};
 
-export function useMesaTreino(config: ConfigTreino, voce: { nome: string; aparencia: AparenciaDemo }) {
+export function useMesaTreino(
+  config: ConfigTreino,
+  voce: { nome: string; aparencia: AparenciaDemo },
+) {
   const [lugares, setLugares] = useState<Lugar[]>(() => montarLugares(config, voce));
   const [mao, setMao] = useState<EstadoMao | null>(null);
   const [cartasVisiveis, setCartasVisiveis] = useState(0);
@@ -104,7 +122,12 @@ export function useMesaTreino(config: ConfigTreino, voce: { nome: string; aparen
   const [velocidade, setVelocidade] = useState<Velocidade>("normal");
   const [avisos, setAvisos] = useState<string[]>([]);
   const [historico, setHistorico] = useState<LinhaHistorico[]>([]);
-  const [estatisticas, setEstatisticas] = useState<Estatisticas>({ maos: 0, ganhas: 0, maiorPote: 0, recompras: 0 });
+  const [estatisticas, setEstatisticas] = useState<Estatisticas>({
+    maos: 0,
+    ganhas: 0,
+    maiorPote: 0,
+    recompras: 0,
+  });
   const [erro, setErro] = useState<string | null>(null);
   const [aguardandoProxima, setAguardandoProxima] = useState(false);
 
@@ -118,7 +141,8 @@ export function useMesaTreino(config: ConfigTreino, voce: { nome: string; aparen
   }, [lugares]);
 
   const fator = velocidade === "rapida" ? 0.35 : 1;
-  const voceSemFichas = lugares.find((l) => l.id === ID_VOCE)!.fichas <= 0 && (!mao || mao.fase === "encerrada");
+  const voceSemFichas =
+    lugares.find((l) => l.id === ID_VOCE)!.fichas <= 0 && (!mao || mao.fase === "encerrada");
 
   const bigBlindAtual = useCallback(
     (numero: number) =>
@@ -143,7 +167,9 @@ export function useMesaTreino(config: ConfigTreino, voce: { nome: string; aparen
     setLugares(atualizados);
     if (novosAvisos.length) setAvisos((a) => [...novosAvisos, ...a].slice(0, 4));
 
-    const participantes = atualizados.filter((l) => l.fichas > 0).sort((a, b) => a.assento - b.assento);
+    const participantes = atualizados
+      .filter((l) => l.fichas > 0)
+      .sort((a, b) => a.assento - b.assento);
     if (participantes.length < 2 || !participantes.some((l) => l.id === ID_VOCE)) return;
 
     numeroMao.current += 1;
@@ -158,7 +184,12 @@ export function useMesaTreino(config: ConfigTreino, voce: { nome: string; aparen
       config: { smallBlind: Math.max(1, Math.floor(bb / 2)), bigBlind: bb, ante: 0 },
       numero: numeroMao.current,
       botao: indiceBotao,
-      jogadores: participantes.map((l) => ({ id: l.id, nome: l.nome, assento: l.assento, fichas: l.fichas })),
+      jogadores: participantes.map((l) => ({
+        id: l.id,
+        nome: l.nome,
+        assento: l.assento,
+        fichas: l.fichas,
+      })),
       baralho: embaralhar(baralhoOrdenado(), inteiroAleatorio),
     });
     setCartasVisiveis(0);
@@ -177,7 +208,10 @@ export function useMesaTreino(config: ConfigTreino, voce: { nome: string; aparen
   useEffect(() => {
     if (!mao || cartasVisiveis >= mao.board.length) return;
     const alvo = cartasVisiveis < 3 ? 3 : cartasVisiveis + 1;
-    const id = window.setTimeout(() => setCartasVisiveis(Math.min(alvo, mao.board.length)), (cartasVisiveis === 0 ? 450 : 900) * fator);
+    const id = window.setTimeout(
+      () => setCartasVisiveis(Math.min(alvo, mao.board.length)),
+      (cartasVisiveis === 0 ? 450 : 900) * fator,
+    );
     return () => window.clearTimeout(id);
   }, [mao, cartasVisiveis, fator]);
 
@@ -214,7 +248,8 @@ export function useMesaTreino(config: ConfigTreino, voce: { nome: string; aparen
 
   // Fim da mão: acerta as fichas, estatísticas, histórico e agenda a próxima.
   useEffect(() => {
-    if (!mao || mao.fase !== "encerrada" || !boardRevelado || finalizada.current === mao.numero) return;
+    if (!mao || mao.fase !== "encerrada" || !boardRevelado || finalizada.current === mao.numero)
+      return;
     finalizada.current = mao.numero;
     const resultado = mao.resultado!;
     perfis.current = registrarMao(perfis.current, mao);
@@ -251,7 +286,9 @@ export function useMesaTreino(config: ConfigTreino, voce: { nome: string; aparen
         {
           numero: mao.numero,
           resumo,
-          linhas: mao.acoes.map((a) => `${nome(a.indice)} ${descreverAcao(a.tipo, a.valor, false)}`),
+          linhas: mao.acoes.map(
+            (a) => `${nome(a.indice)} ${descreverAcao(a.tipo, a.valor, false)}`,
+          ),
         },
         ...h,
       ].slice(0, 25),
@@ -273,7 +310,10 @@ export function useMesaTreino(config: ConfigTreino, voce: { nome: string; aparen
     [mao, indiceVoce],
   );
   const suaVez = !!mao && mao.vez !== null && mao.vez === indiceVoce && boardRevelado && !pausado;
-  const acoesValidas = useMemo(() => (mao && suaVez ? obterAcoesValidas(mao, indiceVoce) : null), [mao, suaVez, indiceVoce]);
+  const acoesValidas = useMemo(
+    () => (mao && suaVez ? obterAcoesValidas(mao, indiceVoce) : null),
+    [mao, suaVez, indiceVoce],
+  );
 
   const agir = useCallback(
     (acao: Acao) => {
@@ -289,7 +329,9 @@ export function useMesaTreino(config: ConfigTreino, voce: { nome: string; aparen
   );
 
   const recomprar = useCallback(() => {
-    setLugares((atual) => atual.map((l) => (l.id === ID_VOCE ? { ...l, fichas: config.fichasIniciais } : l)));
+    setLugares((atual) =>
+      atual.map((l) => (l.id === ID_VOCE ? { ...l, fichas: config.fichasIniciais } : l)),
+    );
     lugaresRef.current = lugaresRef.current.map((l) =>
       l.id === ID_VOCE ? { ...l, fichas: config.fichasIniciais } : l,
     );

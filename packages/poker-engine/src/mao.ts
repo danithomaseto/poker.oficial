@@ -67,8 +67,10 @@ export function iniciarMao(entrada: EntradaMao): Transicao {
   }
   const ordenados = [...entrada.jogadores].sort((a, b) => a.assento - b.assento);
   if (ordenados.length < 2) throw new RangeError("Uma mão precisa de pelo menos 2 jogadores.");
-  if (ordenados.some((j) => j.fichas <= 0)) throw new RangeError("Todo jogador da mão precisa ter fichas.");
-  if (entrada.botao < 0 || entrada.botao >= ordenados.length) throw new RangeError("Botão inválido.");
+  if (ordenados.some((j) => j.fichas <= 0))
+    throw new RangeError("Todo jogador da mão precisa ter fichas.");
+  if (entrada.botao < 0 || entrada.botao >= ordenados.length)
+    throw new RangeError("Botão inválido.");
   if (new Set(entrada.baralho).size !== 52 || entrada.baralho.length !== 52) {
     throw new RangeError("O baralho precisa ter as 52 cartas, sem repetição.");
   }
@@ -169,7 +171,12 @@ function rodadaCompleta(estado: EstadoMao): boolean {
  * Depois de cada ação: termina a mão se só sobrou um, avança a rodada se ela fechou ou
  * passa a vez para o próximo que precisa agir a partir de `aPartirDe` (inclusive se `incluir`).
  */
-function seguirOuAvancar(estado: EstadoMao, eventos: Evento[], aPartirDe: number, incluir: boolean): void {
+function seguirOuAvancar(
+  estado: EstadoMao,
+  eventos: Evento[],
+  aPartirDe: number,
+  incluir: boolean,
+): void {
   const vivos = estado.jogadores.filter((j) => !j.desistiu);
   if (vivos.length === 1) {
     encerrarSemShowdown(estado, eventos);
@@ -219,7 +226,10 @@ function avancarRodada(estado: EstadoMao, eventos: Evento[]): void {
   estado.fase = fase;
   // Queima uma carta antes de flop, turn e river.
   estado.queimadas.push(tirarCarta(estado));
-  const novas = fase === "flop" ? [tirarCarta(estado), tirarCarta(estado), tirarCarta(estado)] : [tirarCarta(estado)];
+  const novas =
+    fase === "flop"
+      ? [tirarCarta(estado), tirarCarta(estado), tirarCarta(estado)]
+      : [tirarCarta(estado)];
   estado.board.push(...novas);
   eventos.push({ tipo: "rodada", fase, cartas: novas });
 
@@ -342,8 +352,10 @@ export function obterAcoesValidas(estado: EstadoMao, indice: number): AcoesValid
 }
 
 export function aplicarAcao(estadoAnterior: EstadoMao, indice: number, acao: Acao): Transicao {
-  if (estadoAnterior.fase === "encerrada") throw new ErroAcao("mao_encerrada", "A mão já terminou.");
-  if (estadoAnterior.vez !== indice) throw new ErroAcao("fora_da_vez", "Não é a vez deste jogador.");
+  if (estadoAnterior.fase === "encerrada")
+    throw new ErroAcao("mao_encerrada", "A mão já terminou.");
+  if (estadoAnterior.vez !== indice)
+    throw new ErroAcao("fora_da_vez", "Não é a vez deste jogador.");
 
   const validas = obterAcoesValidas(estadoAnterior, indice);
   const estado = structuredClone(estadoAnterior);
@@ -366,10 +378,12 @@ export function aplicarAcao(estadoAnterior: EstadoMao, indice: number, acao: Aca
       j.desistiu = true;
       break;
     case "passar":
-      if (!validas.podePassar) throw new ErroAcao("acao_invalida", "Há uma aposta para pagar: não dá para passar.");
+      if (!validas.podePassar)
+        throw new ErroAcao("acao_invalida", "Há uma aposta para pagar: não dá para passar.");
       break;
     case "pagar":
-      if (validas.valorParaPagar <= 0) throw new ErroAcao("acao_invalida", "Não há aposta para pagar.");
+      if (validas.valorParaPagar <= 0)
+        throw new ErroAcao("acao_invalida", "Não há aposta para pagar.");
       colocarFichas(j, validas.valorParaPagar, true);
       break;
     case "apostar":
@@ -377,7 +391,10 @@ export function aplicarAcao(estadoAnterior: EstadoMao, indice: number, acao: Aca
       const faixa = tipo === "apostar" ? validas.apostar : validas.aumentar;
       if (!faixa) throw new ErroAcao("acao_invalida", `Não é possível ${tipo} agora.`);
       if (!Number.isInteger(valor) || valor < faixa.min || valor > faixa.max) {
-        throw new ErroAcao("valor_invalido", `O valor precisa estar entre ${faixa.min} e ${faixa.max}.`);
+        throw new ErroAcao(
+          "valor_invalido",
+          `O valor precisa estar entre ${faixa.min} e ${faixa.max}.`,
+        );
       }
       colocarFichas(j, valor - j.apostaRodada, true);
       const acrescimo = valor - estado.apostaAtual;
@@ -409,7 +426,10 @@ export function aplicarAcao(estadoAnterior: EstadoMao, indice: number, acao: Aca
 }
 
 /** Reconstrói uma mão a partir da entrada e da lista de ações (para replay e recuperação). */
-export function reconstruirMao(entrada: EntradaMao, acoes: readonly { indice: number; acao: Acao }[]): EstadoMao {
+export function reconstruirMao(
+  entrada: EntradaMao,
+  acoes: readonly { indice: number; acao: Acao }[],
+): EstadoMao {
   let { estado } = iniciarMao(entrada);
   for (const { indice, acao } of acoes) {
     estado = aplicarAcao(estado, indice, acao).estado;
@@ -418,7 +438,10 @@ export function reconstruirMao(entrada: EntradaMao, acoes: readonly { indice: nu
 }
 
 /** Próximo botão: o próximo assento ocupado depois do botão anterior (entre quem vai jogar). */
-export function proximoBotao(assentosNaProximaMao: readonly number[], assentoBotaoAnterior: number | null): number {
+export function proximoBotao(
+  assentosNaProximaMao: readonly number[],
+  assentoBotaoAnterior: number | null,
+): number {
   const ordenados = [...assentosNaProximaMao].sort((a, b) => a - b);
   if (ordenados.length === 0) throw new RangeError("Sem jogadores.");
   if (assentoBotaoAnterior === null) return 0;

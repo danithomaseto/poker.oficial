@@ -2,23 +2,13 @@
 
 import { useState, type ReactNode } from "react";
 import { NIVEIS } from "@poker/bots";
-import type { AparenciaDemo } from "../ilustracoes/avatar";
 import { EscolhaMesa } from "./escolha-mesa";
+import type { JogadorTreino } from "./jogador-padrao";
 import { MesaJogo } from "./mesa-jogo";
 import type { ConfigTreino } from "./mesas";
 import { PainelAcoes } from "./painel-acoes";
 import { formatarFichas } from "./textos";
 import { useMesaTreino } from "./use-mesa-treino";
-
-export interface JogadorTreino {
-  nome: string;
-  aparencia: AparenciaDemo;
-}
-
-export const JOGADOR_PADRAO: JogadorTreino = {
-  nome: "Você",
-  aparencia: { pele: "#d39a6a", cabelo: { estilo: "curto", cor: "#1d1410" }, roupa: "#c99a3b", acessorio: "nenhum", fundo: "#145236" },
-};
 
 export function Treino({ jogador }: { jogador: JogadorTreino }) {
   const [config, setConfig] = useState<ConfigTreino | null>(null);
@@ -38,7 +28,15 @@ export function Treino({ jogador }: { jogador: JogadorTreino }) {
   return <Partida key={sessao} config={config} jogador={jogador} aoSair={() => setConfig(null)} />;
 }
 
-function Partida({ config, jogador, aoSair }: { config: ConfigTreino; jogador: JogadorTreino; aoSair: () => void }) {
+function Partida({
+  config,
+  jogador,
+  aoSair,
+}: {
+  config: ConfigTreino;
+  jogador: JogadorTreino;
+  aoSair: () => void;
+}) {
   const mesa = useMesaTreino(config, jogador);
   const [verHistorico, setVerHistorico] = useState(false);
   const nivel = config.nivel === "misto" ? "Misto" : NIVEIS[config.nivel].nome;
@@ -57,7 +55,8 @@ function Partida({ config, jogador, aoSair }: { config: ConfigTreino; jogador: J
                 <span className="text-ouro-300">{nivel}</span>
                 {mesa.mao && <span>Mão #{mesa.mao.numero}</span>}
                 <span>
-                  Blinds {formatarFichas(Math.floor(mesa.bigBlind / 2))}/{formatarFichas(mesa.bigBlind)}
+                  Blinds {formatarFichas(Math.floor(mesa.bigBlind / 2))}/
+                  {formatarFichas(mesa.bigBlind)}
                 </span>
               </p>
             </div>
@@ -79,7 +78,10 @@ function Partida({ config, jogador, aoSair }: { config: ConfigTreino; jogador: J
           {mesa.avisos.length > 0 && (
             <div className="pointer-events-none absolute top-20 left-1/2 z-20 flex w-[min(90%,32rem)] -translate-x-1/2 flex-col gap-2">
               {mesa.avisos.slice(0, 2).map((a) => (
-                <p key={a} className="animar-mensagem rounded-[6px] bg-creme-50/95 px-4 py-2 text-center text-sm text-tinta shadow-lg">
+                <p
+                  key={a}
+                  className="animar-mensagem rounded-[6px] bg-creme-50/95 px-4 py-2 text-center text-sm text-tinta shadow-lg"
+                >
                   {a}
                 </p>
               ))}
@@ -98,7 +100,9 @@ function Partida({ config, jogador, aoSair }: { config: ConfigTreino; jogador: J
             </div>
             <div>
               <dt className="inline">Maior pote </dt>
-              <dd className="inline text-creme-50">{formatarFichas(mesa.estatisticas.maiorPote)}</dd>
+              <dd className="inline text-creme-50">
+                {formatarFichas(mesa.estatisticas.maiorPote)}
+              </dd>
             </div>
           </dl>
         </div>
@@ -110,11 +114,17 @@ function Partida({ config, jogador, aoSair }: { config: ConfigTreino; jogador: J
           >
             <div className="flex items-center justify-between">
               <h2 className="font-display text-2xl text-creme-50">Histórico</h2>
-              <button type="button" onClick={() => setVerHistorico(false)} className="rotulo text-creme-300 hover:text-creme-50">
+              <button
+                type="button"
+                onClick={() => setVerHistorico(false)}
+                className="rotulo text-creme-300 hover:text-creme-50"
+              >
                 Fechar
               </button>
             </div>
-            {mesa.historico.length === 0 && <p className="mt-4 text-sm text-creme-300">Nenhuma mão terminou ainda.</p>}
+            {mesa.historico.length === 0 && (
+              <p className="mt-4 text-sm text-creme-300">Nenhuma mão terminou ainda.</p>
+            )}
             <ol className="mt-4 space-y-5">
               {mesa.historico.map((h) => (
                 <li key={h.numero} className="border-t border-ouro-400/20 pt-3">
@@ -137,14 +147,24 @@ function Partida({ config, jogador, aoSair }: { config: ConfigTreino; jogador: J
   );
 }
 
-function BotaoBarra({ children, onClick, ativo }: { children: ReactNode; onClick: () => void; ativo?: boolean }) {
+function BotaoBarra({
+  children,
+  onClick,
+  ativo,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+  ativo?: boolean;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={ativo}
       className={`rotulo rounded-[5px] border px-3 py-2 backdrop-blur-sm transition-colors ${
-        ativo ? "border-creme-100 bg-creme-100 text-tinta" : "border-white/15 bg-black/45 text-creme-100 hover:border-white/40"
+        ativo
+          ? "border-creme-100 bg-creme-100 text-tinta"
+          : "border-white/15 bg-black/45 text-creme-100 hover:border-white/40"
       }`}
     >
       {children}

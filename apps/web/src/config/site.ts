@@ -4,6 +4,8 @@
 export const site = {
   nome: "Poker entre Amigos",
   nomeCurto: "Poker Amigos",
+  /** Endereço público, usado nas mensagens de convite. */
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://poker-oficial.vercel.app",
   descricao:
     "Clube privado de Texas Hold'em No-Limit para um grupo fechado de amigos. Abre no navegador, entra só por convite e as fichas são 100% virtuais.",
 } as const;

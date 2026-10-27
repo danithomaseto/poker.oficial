@@ -52,7 +52,9 @@ export function AvisoFormulario<C extends string>({ estado }: { estado: EstadoFo
           : "border-tinta bg-papel-escuro/70 text-tinta"
       }`}
     >
-      <p className="rotulo mb-1">{erro ? "Opa" : "Em obras"}</p>
+      <p className="rotulo mb-1">
+        {erro ? "Opa" : estado.status === "sucesso" ? "Pronto" : "Aviso"}
+      </p>
       <p>{estado.mensagem}</p>
     </div>
   );

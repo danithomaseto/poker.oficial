@@ -22,9 +22,16 @@ function acaoAleatoria(estado: EstadoMao, aleatorio: (n: number) => number): Aca
   const opcoes: Acao[] = [{ tipo: "desistir" }, { tipo: "allin" }];
   if (v.podePassar) opcoes.push({ tipo: "passar" }, { tipo: "passar" });
   if (v.valorParaPagar > 0) opcoes.push({ tipo: "pagar" }, { tipo: "pagar" });
-  if (v.apostar) opcoes.push({ tipo: "apostar", valor: v.apostar.min + aleatorio(v.apostar.max - v.apostar.min + 1) });
+  if (v.apostar)
+    opcoes.push({
+      tipo: "apostar",
+      valor: v.apostar.min + aleatorio(v.apostar.max - v.apostar.min + 1),
+    });
   if (v.aumentar) {
-    opcoes.push({ tipo: "aumentar", valor: v.aumentar.min + aleatorio(v.aumentar.max - v.aumentar.min + 1) });
+    opcoes.push({
+      tipo: "aumentar",
+      valor: v.aumentar.min + aleatorio(v.aumentar.max - v.aumentar.min + 1),
+    });
   }
   return opcoes[aleatorio(opcoes.length)]!;
 }
@@ -37,7 +44,13 @@ const cenario = fc.record({
   semente: fc.integer({ min: 1, max: 2 ** 31 - 1 }),
 });
 
-type Cenario = { fichas: number[]; smallBlind: number; ante: number; botaoBruto: number; semente: number };
+type Cenario = {
+  fichas: number[];
+  smallBlind: number;
+  ante: number;
+  botaoBruto: number;
+  semente: number;
+};
 
 function jogarMaoAleatoria({ fichas, smallBlind, ante, botaoBruto, semente }: Cenario) {
   const aleatorio = geradorComSemente(semente);
@@ -101,7 +114,12 @@ describe("propriedades do motor", () => {
           config: { smallBlind: c.smallBlind, bigBlind: c.smallBlind * 2, ante: 0 },
           numero: 1,
           botao: c.botaoBruto % c.fichas.length,
-          jogadores: c.fichas.map((f, i) => ({ id: `j${i}`, nome: `J${i}`, assento: i, fichas: f })),
+          jogadores: c.fichas.map((f, i) => ({
+            id: `j${i}`,
+            nome: `J${i}`,
+            assento: i,
+            fichas: f,
+          })),
           baralho: embaralhar(baralhoOrdenado(), aleatorio),
         }).estado;
         while (estado.vez !== null) {

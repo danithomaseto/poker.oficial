@@ -54,7 +54,10 @@ export function baralhoOrdenado(): Carta[] {
  * Fisher-Yates com a fonte de aleatoriedade injetada: `inteiroAleatorio(n)` deve devolver
  * um inteiro em [0, n). No servidor use `crypto.randomInt`; no treino, `crypto.getRandomValues`.
  */
-export function embaralhar(baralho: readonly Carta[], inteiroAleatorio: (n: number) => number): Carta[] {
+export function embaralhar(
+  baralho: readonly Carta[],
+  inteiroAleatorio: (n: number) => number,
+): Carta[] {
   const copia = [...baralho];
   for (let i = copia.length - 1; i > 0; i--) {
     const j = inteiroAleatorio(i + 1);

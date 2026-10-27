@@ -21,7 +21,16 @@ type Props = {
  * Carta de baralho desenhada só com HTML e CSS: índices grandes nos cantos para leitura
  * rápida e o naipe no centro. A animação de virar usa 3D com as duas faces sobrepostas.
  */
-export function Carta({ carta, largura = "4rem", virar, atraso = 0, apagada, destaque, className, style }: Props) {
+export function Carta({
+  carta,
+  largura = "4rem",
+  virar,
+  atraso = 0,
+  apagada,
+  destaque,
+  className,
+  style,
+}: Props) {
   const naipe = naipes[carta.naipe];
   const cor = naipe.vermelho ? "text-[#c22d2a]" : "text-[#16191a]";
 
@@ -34,7 +43,10 @@ export function Carta({ carta, largura = "4rem", virar, atraso = 0, apagada, des
       } ${destaque ? "-translate-y-[0.18em]" : ""} ${className ?? ""}`}
       style={{ width: largura, aspectRatio: "5 / 7", fontSize: `calc(${largura} * 0.3)`, ...style }}
     >
-      <span className={`absolute inset-0 transform-3d ${virar ? "animar-virar" : ""}`} style={{ animationDelay: `${atraso}ms` }}>
+      <span
+        className={`absolute inset-0 transform-3d ${virar ? "animar-virar" : ""}`}
+        style={{ animationDelay: `${atraso}ms` }}
+      >
         {/* Frente */}
         <span
           className={`absolute inset-0 overflow-hidden rounded-[0.16em] bg-[linear-gradient(160deg,#fffdf7,#f1ead8)] backface-hidden ${cor} ${
@@ -51,7 +63,9 @@ export function Carta({ carta, largura = "4rem", virar, atraso = 0, apagada, des
             <span className="text-[1em] tracking-[-0.06em]">{carta.valor}</span>
             <span className="text-[0.78em]">{naipe.simbolo}</span>
           </span>
-          <span className="absolute inset-0 grid place-items-center pt-[0.2em] text-[2.1em] leading-none">{naipe.simbolo}</span>
+          <span className="absolute inset-0 grid place-items-center pt-[0.2em] text-[2.1em] leading-none">
+            {naipe.simbolo}
+          </span>
         </span>
         {/* Verso */}
         <span className="verso-carta absolute inset-0 rotate-y-180 rounded-[0.16em] backface-hidden" />
@@ -61,7 +75,11 @@ export function Carta({ carta, largura = "4rem", virar, atraso = 0, apagada, des
 }
 
 /** Carta virada para baixo (sem valor), usada para cartas de outros jogadores. */
-export function VersoCarta({ largura = "4rem", className, style }: Pick<Props, "largura" | "className" | "style">) {
+export function VersoCarta({
+  largura = "4rem",
+  className,
+  style,
+}: Pick<Props, "largura" | "className" | "style">) {
   return (
     <span
       aria-hidden

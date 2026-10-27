@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Avatar, paletaDemo, type AparenciaDemo } from "../ilustracoes/avatar";
+import { Carteirinha } from "../carteirinha";
+import { paletaDemo, type AparenciaDemo } from "../ilustracoes/avatar";
 
 /**
  * Demonstração do criador de personagem no site público, em forma de carteirinha de sócio.
@@ -44,7 +45,7 @@ const inicial: AparenciaDemo = {
   fundo: "#145236",
 };
 
-const nomesEstilo: Record<AparenciaDemo["cabelo"]["estilo"], string> = {
+export const nomesEstilo: Record<AparenciaDemo["cabelo"]["estilo"], string> = {
   curto: "Curto",
   longo: "Longo",
   coque: "Coque",
@@ -52,7 +53,7 @@ const nomesEstilo: Record<AparenciaDemo["cabelo"]["estilo"], string> = {
   careca: "Careca",
 };
 
-const nomesAcessorio: Record<AparenciaDemo["acessorio"], string> = {
+export const nomesAcessorio: Record<AparenciaDemo["acessorio"], string> = {
   nenhum: "Nada",
   oculos: "Óculos",
   bone: "Boné",
@@ -92,53 +93,15 @@ export function PersonagemDemo() {
   return (
     <div className="grid gap-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] xl:items-center">
       {/* A carteirinha */}
-      <div className="mx-auto w-full max-w-[34rem] -rotate-2 transition-transform duration-700 ease-(--ease-mola) hover:rotate-0">
-        <div className="textura-papel relative overflow-hidden rounded-[10px] bg-creme-50 text-tinta shadow-[0_30px_60px_-20px_rgba(0,0,0,0.7)]">
-          <div className="flex items-center justify-between bg-naipe-vermelho px-5 py-2.5 text-creme-50">
-            <span className="rotulo">Carteirinha de sócio</span>
-            <span className="rotulo tabular-nums">Nº 0007</span>
-          </div>
-          <div className="m-2.5 grid grid-cols-[auto_1fr] gap-5 border border-tinta/25 p-4 sm:p-5">
-            <div
-              key={versao}
-              className="animar-surgir size-28 overflow-hidden rounded-[6px] border-2 border-tinta sm:size-36"
-            >
-              <Avatar
-                aparencia={aparencia}
-                className="size-full scale-[1.18]"
-                titulo={`Boneco de demonstração: ${apelido}`}
-              />
-            </div>
-            <dl className="grid content-center gap-3">
-              <div>
-                <dt className="rotulo text-tinta-suave">Nome na mesa</dt>
-                <dd
-                  key={`nome-${versao}`}
-                  className="animar-mensagem font-display text-2xl leading-tight font-semibold sm:text-3xl"
-                >
-                  {apelido}
-                </dd>
-              </div>
-              <div className="flex gap-8">
-                <div>
-                  <dt className="rotulo text-tinta-suave">Sócio desde</dt>
-                  <dd className="font-mono text-sm">2026</dd>
-                </div>
-                <div>
-                  <dt className="rotulo text-tinta-suave">Valor das fichas</dt>
-                  <dd className="font-mono text-sm">R$ 0,00</dd>
-                </div>
-              </div>
-            </dl>
-          </div>
-          <p
-            aria-hidden
-            className="truncate px-5 pb-3 font-mono text-[0.7rem] tracking-[0.5em] text-tinta/35"
-          >
-            ♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣♠♥♦♣
-          </p>
-        </div>
-      </div>
+      <Carteirinha
+        className="mx-auto max-w-[34rem]"
+        inclinada
+        nome={apelido}
+        numero={7}
+        aparencia={aparencia}
+        desde="2026"
+        chaveAnimacao={versao}
+      />
 
       {/* Opções */}
       <div className="space-y-5">
@@ -189,7 +152,7 @@ export function PersonagemDemo() {
   );
 }
 
-function GrupoCores({
+export function GrupoCores({
   rotulo,
   cores,
   atual,
@@ -224,7 +187,7 @@ function GrupoCores({
   );
 }
 
-function GrupoOpcoes<T extends string>({
+export function GrupoOpcoes<T extends string>({
   rotulo,
   opcoes,
   nomes,

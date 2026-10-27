@@ -141,11 +141,7 @@ export interface AcoesValidas {
 
 export class ErroAcao extends Error {
   constructor(
-    readonly codigo:
-      | "mao_encerrada"
-      | "fora_da_vez"
-      | "acao_invalida"
-      | "valor_invalido",
+    readonly codigo: "mao_encerrada" | "fora_da_vez" | "acao_invalida" | "valor_invalido",
     mensagem: string,
   ) {
     super(mensagem);

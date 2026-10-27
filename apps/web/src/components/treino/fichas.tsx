@@ -33,7 +33,11 @@ export function PilhaFichas({ valor, tamanho }: { valor: number; tamanho: number
   return (
     <span aria-hidden className="flex items-end" style={{ gap: tamanho * 0.08 }}>
       {colunas.map((c, i) => (
-        <span key={i} className="relative" style={{ width: tamanho, height: altura * (c.quantidade - 1) * 0.55 + tamanho * 0.62 }}>
+        <span
+          key={i}
+          className="relative"
+          style={{ width: tamanho, height: altura * (c.quantidade - 1) * 0.55 + tamanho * 0.62 }}
+        >
           {Array.from({ length: c.quantidade }, (_, k) => (
             <span
               key={k}

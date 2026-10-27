@@ -44,7 +44,9 @@ export interface VisaoMao {
 
 export function projetarParaJogador(estado: EstadoMao, quem: number | "espectador"): VisaoMao {
   const eu = quem === "espectador" ? null : quem;
-  const revelados = new Set(estado.resultado?.showdown ? estado.resultado.maos.map((m) => m.indice) : []);
+  const revelados = new Set(
+    estado.resultado?.showdown ? estado.resultado.maos.map((m) => m.indice) : [],
+  );
 
   return {
     numero: estado.numero,

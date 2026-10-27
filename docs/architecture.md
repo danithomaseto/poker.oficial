@@ -66,3 +66,41 @@ Formato curto: contexto, decisão, consequência. Uma entrada por decisão relev
 - **Decisão:** cartas em HTML/CSS e avatar em SVG por camadas (`fundo`, `corpo`, `cabeça`, `cabelo`,
   `acessório`) em `components/ilustracoes/avatar.tsx`.
 - **Consequência:** o mesmo modelo de camadas pode ser reaproveitado no criador de personagem da fase 3.
+
+## ADR-009 · Motor de poker como reducer puro em `packages/poker-engine`
+
+- **Contexto:** a mesma regra precisa rodar no treino (navegador), nos bots e, depois, no servidor.
+- **Decisão:** TypeScript puro, sem DOM nem Node: `iniciarMao` recebe o baralho já embaralhado,
+  `aplicarAcao` devolve novo estado + eventos, `projetarParaJogador` é a única visão que sai do estado.
+  Índices de jogador são posições no array ordenado por assento.
+- **Consequência:** determinístico e reconstruível por entrada + ações. 48 testes, incluindo
+  propriedades com fast-check (conservação de fichas, saldo nunca negativo, mão sempre termina,
+  nenhuma visão com carta alheia). O avaliador faz ~2,4 milhões de mãos de 7 cartas por segundo.
+- **Simplificação documentada:** vários all-ins curtos que somados dariam um aumento completo não
+  reabrem a ação (só um aumento completo reabre).
+
+## ADR-010 · Bots decidem só com a visão do próprio jogador
+
+- **Contexto:** bot que lê o estado completo trapaceia.
+- **Decisão:** `packages/bots` recebe `VisaoMao` + `AcoesValidas`. Fácil = aleatório ponderado; Médio =
+  Chen + Monte Carlo curto + odds do pote; Difícil = Monte Carlo (900) + posição + tamanho de aposta;
+  Extremo = Monte Carlo (1800) contra ranges estimados pelas ações, blefe com frequência controlada e
+  adaptação por perfil (VPIP, agressão, desistência). No navegador rodam num Web Worker.
+- **Consequência:** a dificuldade vem de decisão melhor, não de informação privilegiada.
+
+## ADR-011 · Contas sem chave secreta no site
+
+- **Contexto:** o briefing proíbe a chave `service_role` fora do servidor de jogo, que ainda não existe.
+- **Decisão:** o site usa só a chave pública. Criar conta exige convite válido, garantido por um gatilho
+  em `auth.users` que consome o convite na mesma transação. Ações do dono são funções
+  `SECURITY DEFINER` que conferem `eh_dono()`. Banimento: `perfis.status`, checado no `proxy.ts`
+  (encerra a sessão) e na camada `lib/sessao.ts` de cada página.
+- **Consequência:** nada sensível no frontend. O cadastro público do Supabase fica ligado, mas sem
+  convite a criação da conta é desfeita.
+
+## ADR-012 · Treino aberto enquanto não há banco
+
+- **Contexto:** o site já está publicado e o banco depende de configuração manual.
+- **Decisão:** sem as variáveis do Supabase, `/treino` funciona para qualquer um (não há dado a proteger);
+  com elas, exige jogador ativo. `/jogo` e `/admin` sempre exigem conta.
+- **Consequência:** dá para testar o treino já; ao configurar o banco e publicar de novo, a proteção liga sozinha.

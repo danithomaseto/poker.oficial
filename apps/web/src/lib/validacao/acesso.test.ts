@@ -66,6 +66,7 @@ describe("loginSchema", () => {
 describe("resgateConviteSchema", () => {
   const base = {
     codigo: "ABCD-EFGH-1234",
+    nome: "Rei do Blefe",
     email: "amigo@exemplo.com",
     senha: "senha-forte-1",
     confirmacaoSenha: "senha-forte-1",

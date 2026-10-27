@@ -10,14 +10,16 @@ export function pontosChen(c1: Carta, c2: Carta): number {
   const v2 = valorDe(c2);
   const alto = Math.max(v1, v2);
   const baixo = Math.min(v1, v2);
-  const pontosCarta = (v: number) => (v === 14 ? 10 : v === 13 ? 8 : v === 12 ? 7 : v === 11 ? 6 : v / 2);
+  const pontosCarta = (v: number) =>
+    v === 14 ? 10 : v === 13 ? 8 : v === 12 ? 7 : v === 11 ? 6 : v / 2;
 
   let pontos = pontosCarta(alto);
   if (v1 === v2) return Math.max(5, pontos * 2);
 
   if (naipeDe(c1) === naipeDe(c2)) pontos += 2;
   const intervalo = alto - baixo - 1;
-  pontos -= intervalo <= 0 ? 0 : intervalo === 1 ? 1 : intervalo === 2 ? 2 : intervalo === 3 ? 4 : 5;
+  pontos -=
+    intervalo <= 0 ? 0 : intervalo === 1 ? 1 : intervalo === 2 ? 2 : intervalo === 3 ? 4 : 5;
   if (intervalo <= 1 && alto < 12) pontos += 1;
   return Math.ceil(pontos);
 }

@@ -8,7 +8,10 @@ export type NivelBot = "facil" | "medio" | "dificil" | "extremo";
 export const NIVEIS: Record<NivelBot, { nome: string; descricao: string }> = {
   facil: { nome: "Fácil", descricao: "Joga no impulso: paga muito e quase nunca blefa." },
   medio: { nome: "Médio", descricao: "Olha a força da mão e faz a conta do pote." },
-  dificil: { nome: "Difícil", descricao: "Simula milhares de mãos, respeita posição e dimensiona as apostas." },
+  dificil: {
+    nome: "Difícil",
+    descricao: "Simula milhares de mãos, respeita posição e dimensiona as apostas.",
+  },
   extremo: {
     nome: "Extremo",
     descricao: "Estima o range de cada adversário, blefa na medida e se adapta ao seu estilo.",
@@ -65,12 +68,15 @@ function montarContexto(visao: VisaoMao, acoes: AcoesValidas, aleatorio: Aleator
     posicao: distanciaDoBotao === 0 ? 1 : (distanciaDoBotao - 1) / Math.max(1, n - 1),
     limpers:
       visao.fase === "preflop"
-        ? oponentesVivos.filter((j) => j.ultimaAcao?.tipo === "pagar" && j.apostaRodada === visao.bigBlindValor).length
+        ? oponentesVivos.filter(
+            (j) => j.ultimaAcao?.tipo === "pagar" && j.apostaRodada === visao.bigBlindValor,
+          ).length
         : 0,
   };
 }
 
-const passarOuDesistir = (c: Contexto): Acao => (c.acoes.podePassar ? { tipo: "passar" } : { tipo: "desistir" });
+const passarOuDesistir = (c: Contexto): Acao =>
+  c.acoes.podePassar ? { tipo: "passar" } : { tipo: "desistir" };
 const passarOuPagar = (c: Contexto): Acao =>
   c.acoes.podePassar ? { tipo: "passar" } : { tipo: "pagar" };
 
@@ -91,7 +97,10 @@ function apostarFracao(c: Contexto, fracaoDoPote: number): Acao {
 function aumentarPreflop(c: Contexto, multiplicador: number): Acao {
   const faixa = c.acoes.aumentar ?? c.acoes.apostar;
   if (!faixa) return passarOuPagar(c);
-  const alvo = arredondar(Math.max(c.visao.apostaAtual, c.bb) * multiplicador + c.bb * c.limpers, c.bb);
+  const alvo = arredondar(
+    Math.max(c.visao.apostaAtual, c.bb) * multiplicador + c.bb * c.limpers,
+    c.bb,
+  );
   const valor = Math.max(faixa.min, Math.min(faixa.max, alvo));
   if (valor >= faixa.max) return { tipo: "allin" };
   return { tipo: c.acoes.aumentar ? "aumentar" : "apostar", valor };
@@ -220,15 +229,30 @@ function extremo(c: Contexto, perfis: Perfis): Acao {
       if (p >= limiarAbrir - 0.15 && c.devendo <= c.bb) return passarOuPagar(c);
       return passarOuDesistir(c);
     }
-    const e = equidade(c.cartas, [], c.oponentesVivos.length, 700, c.aleatorio, faixasEstimadas(c, perfis));
+    const e = equidade(
+      c.cartas,
+      [],
+      c.oponentesVivos.length,
+      700,
+      c.aleatorio,
+      faixasEstimadas(c, perfis),
+    );
     if (p >= 0.9 && c.aleatorio() < 0.55) return aumentarPreflop(c, 3);
     // 3-bet de blefe ocasional com mãos jogáveis, em posição.
-    if (p >= 0.55 && p < 0.75 && c.posicao > 0.6 && c.aleatorio() < 0.08) return aumentarPreflop(c, 3);
+    if (p >= 0.55 && p < 0.75 && c.posicao > 0.6 && c.aleatorio() < 0.08)
+      return aumentarPreflop(c, 3);
     if (e > c.oddsDoPote + 0.02 && c.devendo <= c.eu.fichas * 0.4) return passarOuPagar(c);
     return passarOuDesistir(c);
   }
 
-  const e = equidade(c.cartas, c.visao.board, c.oponentesVivos.length, 1800, c.aleatorio, faixasEstimadas(c, perfis));
+  const e = equidade(
+    c.cartas,
+    c.visao.board,
+    c.oponentesVivos.length,
+    1800,
+    c.aleatorio,
+    faixasEstimadas(c, perfis),
+  );
   const ajusteChamada = agressivos ? -0.05 : pagamMuito ? 0.03 : 0;
 
   if (c.acoes.podePassar) {
@@ -257,7 +281,13 @@ export function decidir({ visao, acoes, nivel, aleatorio, perfis = {} }: Entrada
   if (visao.eu === null || !visao.jogadores[visao.eu]?.cartas) return { tipo: "desistir" };
   const c = montarContexto(visao, acoes, aleatorio);
   const acao =
-    nivel === "facil" ? facil(c) : nivel === "medio" ? medio(c) : nivel === "dificil" ? dificil(c) : extremo(c, perfis);
+    nivel === "facil"
+      ? facil(c)
+      : nivel === "medio"
+        ? medio(c)
+        : nivel === "dificil"
+          ? dificil(c)
+          : extremo(c, perfis);
   return garantirValida(acao, acoes);
 }
 
@@ -267,7 +297,11 @@ export function garantirValida(acao: Acao, acoes: AcoesValidas): Acao {
     case "passar":
       return acoes.podePassar ? acao : { tipo: "desistir" };
     case "pagar":
-      return acoes.valorParaPagar > 0 ? acao : acoes.podePassar ? { tipo: "passar" } : { tipo: "desistir" };
+      return acoes.valorParaPagar > 0
+        ? acao
+        : acoes.podePassar
+          ? { tipo: "passar" }
+          : { tipo: "desistir" };
     case "apostar":
     case "aumentar": {
       const faixa = acao.tipo === "apostar" ? acoes.apostar : acoes.aumentar;
