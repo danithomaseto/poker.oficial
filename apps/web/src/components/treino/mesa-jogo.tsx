@@ -84,7 +84,10 @@ interface Voo {
   valor: number;
 }
 
-export function MesaJogo({ mesa }: { mesa: MesaTreino }) {
+/** Só o que a mesa precisa para desenhar: serve ao treino e ao tutorial. */
+export type DadosMesa = Pick<MesaTreino, "visao" | "lugares" | "cartasVisiveis" | "pensando" | "indiceVoce">;
+
+export function MesaJogo({ mesa }: { mesa: DadosMesa }) {
   const { ref, w, h } = useMedida();
   const { visao, lugares, cartasVisiveis, pensando } = mesa;
   const g = geometria(w, h);

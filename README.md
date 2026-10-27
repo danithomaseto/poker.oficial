@@ -3,8 +3,10 @@
 Mesa privada de Texas Hold'em No-Limit para um grupo fechado de amigos, direto no navegador.
 Entrada só por convite, fichas 100% virtuais, voz no Discord por fora.
 
-> **Estado atual:** site público, **treino offline contra bots** (`/treino`, do Fácil ao Extremo),
-> contas por convite, lobby com carteirinha e **painel do dono** (`/admin`). Mesas online vêm depois.
+> **Estado atual:** site público; **tutorial** com 10 módulos práticos (`/tutorial`); **treino contra bots**
+> do Fácil ao Extremo (`/treino`); XP, 30 níveis e **21 baralhos** (`/progresso`, `/baralhos`). Tudo isso sem
+> login e **sem internet** (PWA). Com conta: convites, lobby com carteirinha, progresso sincronizado e
+> **painel do dono** (`/admin`). Mesas online vêm depois.
 > Para ativar as contas, siga [`docs/supabase.md`](docs/supabase.md). Progresso em [`docs/progresso.md`](docs/progresso.md).
 
 ## Rodando localmente
@@ -28,8 +30,10 @@ O site abre em http://localhost:3000.
 | `pnpm test` | Testes (Vitest) |
 | `pnpm format` | Prettier |
 
-Sem variáveis de ambiente o site roda sem contas (o treino fica aberto). Para contas e admin, veja
-[`.env.example`](.env.example) e [`docs/supabase.md`](docs/supabase.md).
+Sem variáveis de ambiente o site roda sem contas (tutorial, treino e progresso ficam no aparelho). Para
+contas e admin, veja [`.env.example`](.env.example) e [`docs/supabase.md`](docs/supabase.md).
+
+O modo offline (service worker) só liga no build de produção: `pnpm build` e `pnpm --filter @poker/web start`.
 
 ## Estrutura
 
@@ -37,16 +41,21 @@ Sem variáveis de ambiente o site roda sem contas (o treino fica aberto). Para c
 packages/
   poker-engine/     regras puras de Texas Hold'em, avaliador, side pots (com testes)
   bots/             bots fácil, médio, difícil e extremo
+  progressao/       níveis, títulos, regras de XP, catálogo de baralhos (espelhado no SQL)
 supabase/
-  migrations/       tabelas, RLS e funções (convites, perfis, moedas, admin)
+  migrations/       tabelas, RLS e funções (convites, perfis, moedas, admin, XP, baralhos)
 apps/
   web/              Next.js 16 (App Router), React 19, Tailwind v4
-    src/app/        rotas: (site) = página inicial, (acesso) = entrar e resgatar convite
+    src/app/        rotas: (site) = página inicial, (acesso) = entrar, convite e primeiro acesso,
+                    (app) = lobby, treino, tutorial, baralhos, progresso, admin
+    public/sw.js    service worker do modo offline
     src/components/ seções, ilustrações (mesa, cartas, avatar), formulários
     src/lib/        validação (zod) e utilitários, com testes
 docs/
   requirements.md   consolidação do que entra ou não no jogo, conflitos e sugestões
   architecture.md   decisões de arquitetura (ADRs)
+  supabase.md       como ligar o banco e criar a conta de dono
+  progresso-e-sincronizacao.md  regras de XP, níveis e sincronização
   briefing/         documentos originais do projeto
 ```
 

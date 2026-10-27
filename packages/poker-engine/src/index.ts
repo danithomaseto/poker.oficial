@@ -4,3 +4,4 @@ export * from "./tipos";
 export * from "./potes";
 export * from "./mao";
 export * from "./projecao";
+export * from "./roteiro";

@@ -15,6 +15,9 @@ export const jogadorSchema = z.object({
   status: z.enum(["ativo", "revogado"]),
   criado_em: z.string(),
   moedas: z.coerce.number(),
+  // Vêm da migração de progressão; sem ela, o painel continua funcionando.
+  xp: z.coerce.number().optional(),
+  nivel: z.coerce.number().optional(),
 });
 
 export const conviteSchema = z.object({
@@ -160,7 +163,7 @@ export function ConteudoAdmin({
           Jogadores
         </h2>
         <p className="mt-1 text-creme-100/75">
-          Só dados do jogo: carteirinha, número de sócio e moedas. Nenhum dado pessoal aparece aqui.
+          Só dados do jogo: carteirinha, número de sócio, nível e moedas. Nenhum dado pessoal aparece aqui.
         </p>
         <ul className="mt-6 grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
           {jogadores.map((j) => {
@@ -190,6 +193,11 @@ export function ConteudoAdmin({
                           : banido
                             ? "Sem acesso"
                             : "Com acesso"}
+                        {j.nivel !== undefined && (
+                          <span className="ml-2 font-mono normal-case tracking-normal text-tinta">
+                            · Nível {j.nivel} ({(j.xp ?? 0).toLocaleString("pt-BR")} XP)
+                          </span>
+                        )}
                       </span>
                       {!ehVoce &&
                         (banido ? (

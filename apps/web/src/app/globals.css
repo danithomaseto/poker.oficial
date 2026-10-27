@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./temas-baralho.css";
 
 /*
  * Identidade "clube de carteado": feltro verde, papel cartão, latão e tinta.
@@ -60,11 +61,6 @@
 
 :root {
   color-scheme: dark;
-  /* Cores dos naipes nas cartas; o baralho de 4 cores troca ouros e paus. */
-  --cor-espadas: #16191a;
-  --cor-copas: #c22d2a;
-  --cor-ouros: #c22d2a;
-  --cor-paus: #16191a;
   /* Atualizadas pelo componente EfeitosGlobais. */
   --rolagem: 0;
   --ponteiro-x: 0;
@@ -75,11 +71,6 @@
  * Tipografia fluida: em telas largas tudo que usa rem cresce junto
  * (16px até ~1100px de largura, chegando a 20px em monitores 2K/4K).
  */
-[data-baralho="4cores"] {
-  --cor-ouros: #1f62c4;
-  --cor-paus: #1b7a43;
-}
-
 html {
   font-size: clamp(16px, 0.36vw + 12px, 20px);
   scroll-behavior: smooth;
@@ -111,29 +102,31 @@ section {
 /* Peças visuais                                                       */
 /* ------------------------------------------------------------------ */
 
-/* Verso das cartas: vinho com treliça de latão, moldura e a espada da casa no centro. */
+/* Verso das cartas: desenho vem do tema equipado (app/temas-baralho.css). */
 .verso-carta {
   position: relative;
-  background-color: #6e1d28;
-  background-image:
-    repeating-linear-gradient(45deg, rgba(216, 191, 128, 0.2) 0 1px, transparent 1px 0.28em),
-    repeating-linear-gradient(-45deg, rgba(216, 191, 128, 0.2) 0 1px, transparent 1px 0.28em),
-    radial-gradient(circle at 50% 50%, #8a2a35, #5a1620 75%);
-  border: 0.08em solid #f6efdc;
+  background: var(--verso-fundo);
+  background-color: var(--verso-base);
+  border: 0.08em solid var(--verso-borda);
   box-shadow:
-    inset 0 0 0 0.14em #6e1d28,
-    inset 0 0 0 0.19em rgba(216, 191, 128, 0.55),
+    inset 0 0 0 0.14em var(--verso-base),
+    inset 0 0 0 0.19em var(--verso-moldura),
     0 0.2em 0.5em rgba(0, 0, 0, 0.45);
 }
 .verso-carta::after {
-  content: "♠";
+  content: var(--verso-emblema);
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  color: rgba(234, 220, 180, 0.8);
+  color: var(--verso-emblema-cor);
   font-size: 1.15em;
   line-height: 1;
+}
+
+/* Contorno opcional dos naipes vermelhos (tema Monocromo, para distinguir do preto). */
+.naipe-com-traco {
+  -webkit-text-stroke: var(--traco-vermelhos) #111111;
 }
 
 /* Ruído por cima do fundo (o elemento precisa ser relative). */
@@ -260,6 +253,25 @@ section {
 }
 .anel-vez {
   animation: anel-vez 1.6s ease-in-out infinite;
+}
+
+/* Subida de nível: entra de cima com um leve brilho na borda. */
+@keyframes entrar-nivel {
+  0% {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.96);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(2px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+.aviso-nivel {
+  animation: entrar-nivel 0.5s var(--ease-saida) both;
 }
 
 /* Picote do convite: semicírculos recortados nas bordas do canhoto. */

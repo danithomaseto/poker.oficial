@@ -4,8 +4,24 @@
     {
       "name": "web",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@poker/web", "dev"],
+      "runtimeArgs": [
+        "--filter",
+        "@poker/web",
+        "dev"
+      ],
       "port": 3000
+    },
+    {
+      "name": "web-prod",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--filter",
+        "@poker/web",
+        "start",
+        "--port",
+        "3100"
+      ],
+      "port": 3100
     }
   ]
 }

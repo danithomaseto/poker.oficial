@@ -19,6 +19,9 @@ import { aleatorio01, inteiroAleatorio } from "./aleatorio";
 import { pedirDecisao } from "./executar-bot";
 import { nivelDoBot, type ConfigTreino } from "./mesas";
 import { usePreferencias } from "@/lib/preferencias";
+import { listarEventos } from "@/lib/progresso/idb";
+import { registrarEvento } from "@/lib/progresso/local";
+import { MAOS_OBJETIVO_DIARIO, MAOS_POR_SESSAO, diaSaoPaulo } from "@poker/progressao";
 import { linhasDaMao, type LinhaLog } from "./textos";
 
 /**
@@ -135,6 +138,9 @@ export function useMesaTreino(
   const [aguardandoProxima, setAguardandoProxima] = useState(false);
 
   const perfis = useRef<Perfis>({});
+  // Sessão de treino: identifica as mãos para o XP (chave única por mão, sem pagar duas vezes).
+  const sessaoId = useRef<string>("");
+  const maosNaSessao = useRef(0);
   const botaoAssento = useRef<number | null>(null);
   const numeroMao = useRef(0);
   const finalizada = useRef(0);
@@ -289,6 +295,23 @@ export function useMesaTreino(
     );
 
     setAguardandoProxima(true);
+
+    if (indiceVoce >= 0) {
+      if (!sessaoId.current) sessaoId.current = crypto.randomUUID();
+      maosNaSessao.current += 1;
+      const sessao = sessaoId.current;
+      const totalSessao = maosNaSessao.current;
+      void (async () => {
+        await registrarEvento("mao_treino", `mao:${sessao}:${mao.numero}`);
+        if (totalSessao >= MAOS_POR_SESSAO) await registrarEvento("sessao_treino", `sessao:${sessao}`);
+        const hoje = diaSaoPaulo(new Date().toISOString());
+        const eventos = await listarEventos<{ tipo: string; ocorridoEm: string; estado: string }>();
+        const maosHoje = eventos.filter(
+          (e) => e.tipo === "mao_treino" && e.estado !== "recusado" && diaSaoPaulo(e.ocorridoEm) === hoje,
+        ).length;
+        if (maosHoje >= MAOS_OBJETIVO_DIARIO) await registrarEvento("objetivo_diario", `diario:${hoje}`);
+      })();
+    }
   }, [mao, boardRevelado]);
 
   // Próxima mão automática depois de alguns segundos (se não estiver pausado).

@@ -2,7 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { configSupabase } from "@/lib/supabase/config";
 
-const PROTEGIDAS = ["/jogo", "/admin", "/treino"];
+// Treino, tutorial, baralhos e progresso são públicos (funcionam sem conta e sem internet).
+const PROTEGIDAS = ["/jogo", "/admin"];
 
 /**
  * Renova a sessão do Supabase a cada navegação e faz a checagem otimista de acesso:
@@ -11,7 +12,7 @@ const PROTEGIDAS = ["/jogo", "/admin", "/treino"];
  */
 export async function proxy(request: NextRequest) {
   const cfg = configSupabase();
-  // Sem Supabase configurado não há contas: o treino fica aberto e as páginas avisam.
+  // Sem Supabase configurado não há contas: as páginas protegidas avisam que falta configurar.
   if (!cfg) return NextResponse.next();
 
   let resposta = NextResponse.next({ request });
@@ -57,7 +58,7 @@ export async function proxy(request: NextRequest) {
   // Quem já está logado não precisa ver as telas de entrada.
   if (
     id &&
-    (caminho === "/entrar" || caminho === "/resgatar-convite") &&
+    (caminho === "/entrar" || caminho === "/resgatar-convite" || caminho === "/primeiro-acesso") &&
     !request.nextUrl.searchParams.has("motivo")
   ) {
     return redirecionar("/jogo");
@@ -67,5 +68,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/jogo/:path*", "/admin/:path*", "/treino/:path*", "/entrar", "/resgatar-convite"],
+  matcher: ["/jogo/:path*", "/admin/:path*", "/entrar", "/resgatar-convite", "/primeiro-acesso"],
 };

@@ -7,8 +7,10 @@ import { criarClienteServidor } from "@/lib/supabase/servidor";
 import {
   formDataParaObjeto,
   loginSchema,
+  primeiroAcessoSchema,
   resgateConviteSchema,
   type DadosLogin,
+  type DadosPrimeiroAcesso,
   type DadosResgateConvite,
 } from "@/lib/validacao/acesso";
 
@@ -17,6 +19,7 @@ const SEM_CONTAS =
 
 export type CampoLogin = keyof DadosLogin;
 export type CampoResgate = keyof DadosResgateConvite;
+export type CampoPrimeiroAcesso = keyof DadosPrimeiroAcesso;
 
 export async function entrar(
   _anterior: EstadoFormulario<CampoLogin>,
@@ -122,6 +125,61 @@ export async function resgatarConvite(
     };
   }
   redirect("/jogo/personagem");
+}
+
+/**
+ * Primeiro acesso do dono: cria a conta sem convite. Só vira dono se o email for o que está em
+ * `configuracao.email_dono` e ainda não houver dono (o gatilho no banco decide, não esta função).
+ */
+export async function criarContaDono(
+  _anterior: EstadoFormulario<CampoPrimeiroAcesso>,
+  formData: FormData,
+): Promise<EstadoFormulario<CampoPrimeiroAcesso>> {
+  const bruto = formDataParaObjeto(formData);
+  const valores = { nome: bruto.nome ?? "", email: bruto.email ?? "" };
+  const resultado = primeiroAcessoSchema.safeParse(bruto);
+  if (!resultado.success) {
+    return {
+      status: "erro",
+      mensagem: "Confira os campos destacados.",
+      erros: z.flattenError(resultado.error).fieldErrors,
+      valores,
+    };
+  }
+  const { nome, email, senha } = resultado.data;
+
+  const supabase = await criarClienteServidor();
+  if (!supabase) return { status: "indisponivel", mensagem: SEM_CONTAS, valores };
+
+  const { data: aberta } = await supabase.rpc("vaga_de_dono_aberta");
+  if (aberta !== true) {
+    return {
+      status: "erro",
+      mensagem:
+        "O primeiro acesso não está disponível: ou o dono já criou a conta (é só entrar), ou o email do dono ainda não foi configurado no banco.",
+      valores,
+    };
+  }
+
+  const { data, error } = await supabase.auth.signUp({ email, password: senha, options: { data: { nome } } });
+  if (error) {
+    const jaExiste = error.code === "user_already_exists" || /already registered/i.test(error.message);
+    return {
+      status: "erro",
+      mensagem: jaExiste
+        ? "Esse email já tem conta. É só entrar (ou usar “esqueci a senha” no Supabase)."
+        : "Esse email não está autorizado como dono. Use exatamente o email configurado no banco.",
+      valores,
+    };
+  }
+  if (!data.session) {
+    return {
+      status: "sucesso",
+      mensagem: "Conta de dono criada! Confirme o email que o Supabase enviou e depois entre: o painel do dono vai estar no menu.",
+      valores,
+    };
+  }
+  redirect("/admin");
 }
 
 export async function sair(): Promise<void> {

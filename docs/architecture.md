@@ -98,9 +98,44 @@ Formato curto: contexto, decisão, consequência. Uma entrada por decisão relev
 - **Consequência:** nada sensível no frontend. O cadastro público do Supabase fica ligado, mas sem
   convite a criação da conta é desfeita.
 
-## ADR-012 · Treino aberto enquanto não há banco
+## ADR-012 · Treino aberto enquanto não há banco (substituída pela ADR-013)
 
 - **Contexto:** o site já está publicado e o banco depende de configuração manual.
 - **Decisão:** sem as variáveis do Supabase, `/treino` funciona para qualquer um (não há dado a proteger);
   com elas, exige jogador ativo. `/jogo` e `/admin` sempre exigem conta.
 - **Consequência:** dá para testar o treino já; ao configurar o banco e publicar de novo, a proteção liga sozinha.
+
+## ADR-013 · Treino, tutorial, coleção e progresso públicos e offline
+
+- **Contexto:** o pedido de 27/10/2026 exige treinar sem login e sem internet. O treino não tem dado a
+  proteger: motor e bots rodam no navegador, e as fichas são de mentira.
+- **Decisão:** `/treino`, `/tutorial`, `/baralhos` e `/progresso` ficam fora do `proxy.ts` e não leem
+  sessão (só o cabeçalho, dentro de `<Suspense>`). Nome e visual vêm de uma cópia local da carteirinha,
+  gravada pelo cabeçalho quando você está logado. Lobby, admin e as futuras mesas online continuam só
+  com convite.
+- **Consequência:** qualquer pessoa com o link treina. Isso não abre nada do clube: XP de convidado fica
+  no aparelho, e só vai para uma conta com o consentimento de quem entrou.
+
+## ADR-014 · Progressão por eventos com chave única, servidor como referência
+
+- **Contexto:** XP e níveis precisam funcionar offline, sincronizar sem duplicar e não podem ser
+  "comprados" mandando uma requisição.
+- **Decisão:** o cliente registra eventos (`tutorial:mesa`, `mao:<sessão>:<n>`...) e nunca valores. O
+  valor sai de `regras_xp`; `registrar_evento_xp` (SECURITY DEFINER, lock por jogador) recusa chave
+  repetida, aplica tetos diários no fuso de São Paulo e confere requisitos. Nível é derivado do XP
+  total. As mesmas regras vivem em `packages/progressao` e um teste compara com o SQL.
+- **Consequência:** sincronizar é idempotente e a ordem dos aparelhos não importa. O XP do treino offline
+  é declarado pelo aparelho (limitado pelos tetos); o das mesas online virá do servidor de jogo.
+  Detalhes em `docs/progresso-e-sincronizacao.md`.
+
+## ADR-015 · Service worker escrito à mão
+
+- **Contexto:** o app precisa abrir sem internet; o Next 16 não traz PWA pronto e as bibliotecas
+  conhecidas ainda dependem de webpack.
+- **Decisão:** `public/sw.js` pequeno e explícito. `/_next/static` com cache primeiro (arquivos com hash);
+  páginas com rede primeiro e cópia de reserva; páginas públicas e seus arquivos baixados na instalação;
+  pedidos RSC sem rede falham para o Next refazer como navegação normal. Registrado só em produção, com
+  a versão do commit no endereço (cada deploy troca os caches). Outros domínios (Supabase) nunca passam
+  pelo service worker.
+- **Consequência:** sem dependência nova. A cópia guardada pode ter o cabeçalho de quem estava logado;
+  ao sair da conta, as páginas são baixadas de novo.

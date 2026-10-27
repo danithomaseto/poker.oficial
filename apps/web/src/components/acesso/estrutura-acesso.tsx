@@ -12,13 +12,15 @@ type Props = {
   painel: { titulo: ReactNode; texto: string; cartas: CartaVisual[] };
   rodape: ReactNode;
   children: ReactNode;
+  /** Selo à direita da faixa. */
+  selo?: string;
 };
 
 /**
  * Estrutura comum de /entrar e /resgatar-convite: feltro à esquerda, ficha de papel à direita.
  * O cartão tem o mesmo nome de transição nas duas páginas, então "morfa" de uma para a outra.
  */
-export function EstruturaAcesso({ faixa, titulo, descricao, painel, rodape, children }: Props) {
+export function EstruturaAcesso({ faixa, titulo, descricao, painel, rodape, children, selo = "só com convite" }: Props) {
   return (
     <TransicaoPagina>
       <div className="conteiner grid items-center gap-12 py-10 lg:grid-cols-[1fr_minmax(0,34rem)] lg:gap-20 2xl:gap-32">
@@ -42,7 +44,7 @@ export function EstruturaAcesso({ faixa, titulo, descricao, painel, rodape, chil
           <div className="textura-papel relative mx-auto w-full max-w-xl overflow-hidden rounded-[8px] bg-creme-50 text-tinta shadow-[0_30px_60px_-20px_rgba(0,0,0,0.75)]">
             <div className="flex items-center justify-between bg-naipe-vermelho px-6 py-2.5 text-creme-50 sm:px-9">
               <span className="rotulo">{faixa}</span>
-              <span className="rotulo opacity-80">só com convite</span>
+              <span className="rotulo opacity-80">{selo}</span>
             </div>
             <div className="p-6 sm:p-9">
               <h1 className="font-display text-4xl leading-tight font-medium [font-variation-settings:'SOFT'_30,'WONK'_1] sm:text-5xl">

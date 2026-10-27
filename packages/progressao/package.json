@@ -1,0 +1,19 @@
+{
+  "name": "@poker/progressao",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Regras de progressão: curva de XP, níveis, títulos, catálogo de baralhos e fontes de XP.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "vitest": "^5.0.5",
+    "@types/node": "^22"
+  }
+}

@@ -17,6 +17,8 @@ export interface Preferencias {
   dicasTreino: boolean;
   /** Desliga animações do jogo, mesmo se o sistema não pedir. */
   reduzirAnimacoes: boolean;
+  /** Baralho equipado (id do catálogo em @poker/progressao). Só muda o visual. */
+  temaBaralho: string;
 }
 
 export const PREFERENCIAS_PADRAO: Preferencias = {
@@ -25,6 +27,7 @@ export const PREFERENCIAS_PADRAO: Preferencias = {
   avancoAutomatico: true,
   dicasTreino: true,
   reduzirAnimacoes: false,
+  temaBaralho: "classico",
 };
 
 const CHAVE = "poker-amigos:preferencias";
@@ -47,6 +50,7 @@ export function aplicarNoDocumento(p: Preferencias = ler()): void {
   const raiz = document.documentElement;
   raiz.dataset.baralho = p.baralho4Cores ? "4cores" : "2cores";
   raiz.dataset.movimento = p.reduzirAnimacoes ? "reduzido" : "normal";
+  raiz.dataset.temaBaralho = /^[a-z0-9-]{2,30}$/.test(p.temaBaralho) ? p.temaBaralho : "classico";
 }
 
 export function salvarPreferencias(parcial: Partial<Preferencias>): void {

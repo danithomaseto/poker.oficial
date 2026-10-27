@@ -42,6 +42,12 @@ export default function PaginaEntrar() {
           >
             Resgatar um convite
           </Link>
+          <span className="mt-2 block text-sm">
+            É o dono e ainda não criou a conta?{" "}
+            <Link href={rotas.primeiroAcesso} className="underline underline-offset-4 hover:text-tinta">
+              Primeiro acesso
+            </Link>
+          </span>
         </>
       }
     >

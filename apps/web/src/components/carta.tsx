@@ -56,19 +56,24 @@ export function Carta({
         className={`absolute inset-0 transform-3d ${virar ? "animar-virar" : ""}`}
         style={{ animationDelay: `${atraso}ms` }}
       >
-        {/* Frente */}
+        {/* Frente: fundo, moldura, fonte e cores vêm do tema de baralho (variáveis CSS) */}
         <span
-          className={`absolute inset-0 overflow-hidden rounded-[0.16em] bg-[linear-gradient(160deg,#fffdf7,#f1ead8)] backface-hidden ${cor} ${
-            destaque
-              ? "shadow-[0_0_0_0.07em_#d8bf80,0_0.3em_0.8em_rgba(0,0,0,0.5)]"
-              : "shadow-[0_0_0_0.03em_rgba(0,0,0,0.18),0_0.2em_0.5em_rgba(0,0,0,0.4)]"
+          className={`absolute inset-0 overflow-hidden rounded-[0.16em] backface-hidden ${cor} ${
+            naipe.vermelho ? "naipe-com-traco" : ""
           }`}
+          style={{
+            background: "var(--carta-face)",
+            fontFamily: "var(--carta-fonte)",
+            boxShadow: destaque
+              ? "0 0 0 0.07em #d8bf80, inset 0 0 0 0.1em var(--carta-moldura), 0 0.3em 0.8em rgba(0,0,0,0.5)"
+              : "0 0 0 0.03em var(--carta-anel), inset 0 0 0 0.1em var(--carta-moldura), 0 0.2em 0.5em rgba(0,0,0,0.4)",
+          }}
         >
-          <span className="absolute top-[0.12em] left-[0.14em] flex flex-col items-center leading-[0.95] font-sans font-bold">
+          <span className="absolute top-[0.12em] left-[0.14em] flex flex-col items-center leading-[0.95] font-bold">
             <span className="text-[1em] tracking-[-0.06em]">{carta.valor}</span>
             <span className="text-[0.78em]">{naipe.simbolo}</span>
           </span>
-          <span className="absolute right-[0.14em] bottom-[0.12em] flex rotate-180 flex-col items-center leading-[0.95] font-sans font-bold">
+          <span className="absolute right-[0.14em] bottom-[0.12em] flex rotate-180 flex-col items-center leading-[0.95] font-bold">
             <span className="text-[1em] tracking-[-0.06em]">{carta.valor}</span>
             <span className="text-[0.78em]">{naipe.simbolo}</span>
           </span>

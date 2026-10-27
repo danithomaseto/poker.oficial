@@ -31,15 +31,27 @@
 - [ ] Conferir menu do app no celular e a página de preferências no navegador
 - [ ] Relatório final do redesign para o usuário
 
+## Evolução da plataforma (27/10/2026)
+
+- [x] `packages/progressao`: curva de 30 níveis, títulos, regras de XP, catálogo de 21 baralhos, módulos do tutorial
+- [x] Migração de progressão (níveis, regras, eventos de XP, baralho e preferências na conta, RPCs seguras)
+- [x] Progresso local em IndexedDB e sincronização idempotente com a conta (com consentimento para juntar)
+- [x] 21 temas de baralho (10 gratuitos + 11 por nível) aplicados em todas as cartas do jogo
+- [x] `/baralhos` (coleção) e `/progresso` (nível, recompensas, histórico); animação de subida de nível
+- [x] Tutorial com 10 módulos práticos (`/tutorial`), mãos roteirizadas no motor real e desafio final contra bots
+- [x] Treino, tutorial, coleção e progresso públicos (sem login) e offline (service worker + manifesto)
+- [x] Primeiro acesso do dono pelo site (`/primeiro-acesso`) e nível/XP dos jogadores no admin
+- [x] Documentação: `docs/supabase.md`, `docs/progresso-e-sincronizacao.md`, ADR-013 a 015
+- [x] Build, validação no navegador (páginas, celular, offline real com o servidor desligado) e push
+
 ## Depende de você
 
-- [ ] Seguir `docs/supabase.md` (criar o banco, rodar a migração, criar a conta de dono, redeploy)
+- [ ] Seguir `docs/supabase.md`: criar o banco, rodar as 3 migrações, gravar o email do dono, redeploy e criar a conta em `/primeiro-acesso`
 
 ## Próximas etapas sugeridas
 
 - Fase 0 restante: `apps/game-server` (NestJS + Socket.IO), `packages/shared-types`, CI no GitHub Actions
 - Mesas online autoritativas (fase 4), reaproveitando o motor e a mesa já redesenhada
-- Tutorial roteirizado e PWA para o treino funcionar sem internet
 
 ## Concluído
 

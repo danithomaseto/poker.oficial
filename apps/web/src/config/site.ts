@@ -14,4 +14,5 @@ export const rotas = {
   inicio: "/",
   entrar: "/entrar",
   resgatarConvite: "/resgatar-convite",
+  primeiroAcesso: "/primeiro-acesso",
 } as const;

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Carteirinha } from "../carteirinha";
 import type { AparenciaDemo } from "../ilustracoes/avatar";
 import { ListaMesas } from "./lista-mesas";
+import { ResumoProgresso } from "./resumo-progresso";
 
 export interface DadosLobby {
   nome: string;
@@ -50,6 +51,8 @@ export function ConteudoLobby({ dados }: { dados: DadosLobby }) {
       </aside>
 
       <div className="min-w-0 space-y-12">
+        <ResumoProgresso />
+
         <section aria-labelledby="titulo-mesas-treino">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>

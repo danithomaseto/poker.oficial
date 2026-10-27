@@ -1,0 +1,497 @@
+/*
+ * Temas de baralho. Cada tema é um bloco de variáveis em [data-tema-baralho="<id>"]; a carta
+ * (components/carta.tsx) só lê variáveis, então qualquer carta real do jogo muda de tema sem
+ * condição espalhada pelo código. O atributo pode estar no <html> (tema equipado) ou num
+ * elemento qualquer (prévias da Coleção). Metadados (nome, nível) em packages/progressao.
+ */
+
+:root,
+[data-tema-baralho="classico"] {
+  --carta-face: linear-gradient(160deg, #fffdf7, #f1ead8);
+  --carta-anel: rgba(0, 0, 0, 0.18);
+  --carta-moldura: transparent;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-espadas: #16191a;
+  --cor-copas: #c22d2a;
+  --cor-ouros: #c22d2a;
+  --cor-paus: #16191a;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+  --verso-fundo:
+    repeating-linear-gradient(45deg, rgba(216, 191, 128, 0.2) 0 1px, transparent 1px 0.28em),
+    repeating-linear-gradient(-45deg, rgba(216, 191, 128, 0.2) 0 1px, transparent 1px 0.28em),
+    radial-gradient(circle at 50% 50%, #8a2a35, #5a1620 75%);
+  --verso-base: #6e1d28;
+  --verso-moldura: rgba(216, 191, 128, 0.55);
+  --verso-borda: #f6efdc;
+  --verso-emblema: "♠";
+  --verso-emblema-cor: rgba(234, 220, 180, 0.8);
+}
+
+[data-tema-baralho="meia-noite"] {
+  --carta-face: linear-gradient(160deg, #1b2440, #121a30);
+  --carta-anel: #34446e;
+  --carta-moldura: rgba(160, 185, 255, 0.18);
+  --cor-espadas: #eef2fb;
+  --cor-copas: #ff8f80;
+  --cor-ouros: #ff8f80;
+  --cor-paus: #eef2fb;
+  --cor-ouros-4: #8cc4ff;
+  --cor-paus-4: #8ce8b4;
+  --verso-fundo:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.75) 0 0.03em, transparent 0.05em) 0 0 / 0.9em 0.9em,
+    radial-gradient(circle at 70% 65%, rgba(180, 200, 255, 0.55) 0 0.025em, transparent 0.045em) 0 0 / 1.3em 1.3em,
+    linear-gradient(160deg, #1a2a5a, #0a1126);
+  --verso-base: #0f1a3a;
+  --verso-moldura: rgba(160, 185, 255, 0.45);
+  --verso-borda: #c9d6ff;
+  --verso-emblema: "☾";
+  --verso-emblema-cor: #d8e2ff;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+}
+
+[data-tema-baralho="esmeralda"] {
+  --carta-face: linear-gradient(160deg, #fdfbf3, #f1eedf);
+  --carta-anel: #1f6b45;
+  --carta-moldura: rgba(31, 122, 77, 0.55);
+  --cor-espadas: #10241a;
+  --cor-copas: #b0213a;
+  --cor-ouros: #b0213a;
+  --cor-paus: #10241a;
+  --verso-fundo:
+    repeating-linear-gradient(60deg, rgba(232, 206, 140, 0.35) 0 1px, transparent 1px 0.35em),
+    repeating-linear-gradient(-60deg, rgba(232, 206, 140, 0.35) 0 1px, transparent 1px 0.35em),
+    radial-gradient(circle at 50% 40%, #1e8a58, #0c4a2d 80%);
+  --verso-base: #0f5a37;
+  --verso-moldura: rgba(232, 206, 140, 0.7);
+  --verso-borda: #f4ecd2;
+  --verso-emblema: "♣";
+  --verso-emblema-cor: #e8ce8c;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="carmim"] {
+  --carta-face: linear-gradient(160deg, #fff8ef, #f5e6d4);
+  --carta-anel: #7c1720;
+  --carta-moldura: rgba(142, 27, 36, 0.5);
+  --cor-espadas: #1c1112;
+  --cor-copas: #b3121f;
+  --cor-ouros: #b3121f;
+  --cor-paus: #1c1112;
+  --verso-fundo:
+    repeating-radial-gradient(circle at 0 0, rgba(255, 210, 200, 0.12) 0 0.12em, transparent 0.12em 0.36em),
+    repeating-radial-gradient(circle at 100% 100%, rgba(255, 210, 200, 0.12) 0 0.12em, transparent 0.12em 0.36em),
+    linear-gradient(160deg, #9a1b28, #5c0d16);
+  --verso-base: #7d1520;
+  --verso-moldura: rgba(255, 214, 200, 0.5);
+  --verso-borda: #fbe9e1;
+  --verso-emblema: "♥";
+  --verso-emblema-cor: #ffd9cf;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="oceano"] {
+  --carta-face: linear-gradient(170deg, #f7fbfd, #e6f1f7);
+  --carta-anel: #1f5f8b;
+  --carta-moldura: rgba(31, 95, 139, 0.35);
+  --cor-espadas: #0f2a44;
+  --cor-copas: #d24b55;
+  --cor-ouros: #d24b55;
+  --cor-paus: #0f2a44;
+  --verso-fundo:
+    repeating-radial-gradient(circle at 50% 120%, #2a7fb3 0 0.22em, #1d628f 0.22em 0.44em, #174f75 0.44em 0.66em);
+  --verso-base: #174f75;
+  --verso-moldura: rgba(210, 236, 250, 0.55);
+  --verso-borda: #e6f4fb;
+  --verso-emblema: "✦";
+  --verso-emblema-cor: #e6f4fb;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="monocromo"] {
+  --carta-face: #ffffff;
+  --carta-anel: #1a1a1a;
+  --carta-moldura: transparent;
+  --traco-vermelhos: 0.025em;
+  --cor-espadas: #111111;
+  --cor-copas: #8f8f8f;
+  --cor-ouros: #8f8f8f;
+  --cor-paus: #111111;
+  --verso-fundo: repeating-linear-gradient(45deg, #121212 0 0.22em, #2b2b2b 0.22em 0.44em);
+  --verso-base: #161616;
+  --verso-moldura: rgba(255, 255, 255, 0.55);
+  --verso-borda: #ffffff;
+  --verso-emblema: "♠";
+  --verso-emblema-cor: #ffffff;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="realeza"] {
+  --carta-face: linear-gradient(160deg, #f8edd2, #ead8ad);
+  --carta-anel: #9c7a2e;
+  --carta-moldura: rgba(176, 141, 60, 0.75);
+  --carta-fonte: var(--font-fraunces), Georgia, serif;
+  --cor-espadas: #1b1410;
+  --cor-copas: #7a1a2a;
+  --cor-ouros: #7a1a2a;
+  --cor-paus: #1b1410;
+  --verso-fundo:
+    radial-gradient(circle at 50% 50%, transparent 0 0.75em, rgba(232, 196, 110, 0.65) 0.75em 0.8em, transparent 0.8em),
+    repeating-linear-gradient(90deg, rgba(232, 196, 110, 0.12) 0 1px, transparent 1px 0.3em),
+    linear-gradient(160deg, #4a2766, #2a1240);
+  --verso-base: #351a4d;
+  --verso-moldura: rgba(232, 196, 110, 0.8);
+  --verso-borda: #f3e2b4;
+  --verso-emblema: "♛";
+  --verso-emblema-cor: #f0d28a;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="circuito"] {
+  --carta-face: linear-gradient(160deg, #1a1f26, #12161b);
+  --carta-anel: #2f3a46;
+  --carta-moldura: rgba(63, 224, 255, 0.22);
+  --carta-fonte: var(--font-plex-mono), ui-monospace, monospace;
+  --cor-espadas: #43e3ff;
+  --cor-copas: #ff5aa8;
+  --cor-ouros: #ff5aa8;
+  --cor-paus: #43e3ff;
+  --cor-ouros-4: #ffd166;
+  --cor-paus-4: #84ff9a;
+  --verso-fundo:
+    linear-gradient(rgba(67, 227, 255, 0.16) 1px, transparent 1px) 0 0 / 0.45em 0.45em,
+    linear-gradient(90deg, rgba(67, 227, 255, 0.16) 1px, transparent 1px) 0 0 / 0.45em 0.45em,
+    radial-gradient(circle at 50% 50%, #142230, #0b1015 80%);
+  --verso-base: #0d141b;
+  --verso-moldura: rgba(67, 227, 255, 0.55);
+  --verso-borda: #43e3ff;
+  --verso-emblema: "◈";
+  --verso-emblema-cor: #43e3ff;
+  --traco-vermelhos: 0;
+}
+
+[data-tema-baralho="deserto"] {
+  --carta-face: linear-gradient(160deg, #f6e8cd, #ead3a8);
+  --carta-anel: #a87a35;
+  --carta-moldura: rgba(185, 137, 63, 0.55);
+  --cor-espadas: #4a2f1a;
+  --cor-copas: #c0562b;
+  --cor-ouros: #c0562b;
+  --cor-paus: #4a2f1a;
+  --verso-fundo:
+    repeating-linear-gradient(0deg, rgba(255, 236, 180, 0.35) 0 0.06em, transparent 0.06em 0.36em),
+    linear-gradient(170deg, #d8b170, #b98a45);
+  --verso-base: #b98a45;
+  --verso-moldura: rgba(120, 80, 30, 0.55);
+  --verso-borda: #fff1d2;
+  --verso-emblema: "✺";
+  --verso-emblema-cor: #6b4720;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="aurora"] {
+  --carta-face: linear-gradient(160deg, #fdfbff, #edf2ff);
+  --carta-anel: #8a7fd0;
+  --carta-moldura: rgba(120, 110, 210, 0.25);
+  --cor-espadas: #2b2d6e;
+  --cor-copas: #d23f7a;
+  --cor-ouros: #d23f7a;
+  --cor-paus: #2b2d6e;
+  --verso-fundo:
+    radial-gradient(ellipse at 30% 20%, rgba(170, 255, 210, 0.45), transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(255, 170, 230, 0.4), transparent 55%),
+    linear-gradient(135deg, #3b1d6e, #1f6f7a 55%, #2f9a6a);
+  --verso-base: #2c3c6e;
+  --verso-moldura: rgba(230, 240, 255, 0.55);
+  --verso-borda: #f4f1ff;
+  --verso-emblema: "✧";
+  --verso-emblema-cor: #f4f1ff;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+/* ---------------- Desbloqueáveis por nível ---------------- */
+
+[data-tema-baralho="feltro"] {
+  --carta-face: linear-gradient(160deg, #fffaf0, #efe6cf);
+  --carta-anel: #1d4f37;
+  --carta-moldura: rgba(29, 98, 69, 0.35);
+  --verso-fundo:
+    radial-gradient(circle at 50% 50%, transparent 0 0.9em, rgba(216, 191, 128, 0.5) 0.9em 0.95em, transparent 0.95em),
+    radial-gradient(ellipse at 50% 35%, #2a8a5d, #11452f 85%);
+  --verso-base: #154d34;
+  --verso-moldura: rgba(216, 191, 128, 0.75);
+  --verso-borda: #3b2a1e;
+  --verso-emblema: "♠";
+  --verso-emblema-cor: rgba(246, 239, 220, 0.85);
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-espadas: #16191a;
+  --cor-copas: #c22d2a;
+  --cor-ouros: #c22d2a;
+  --cor-paus: #16191a;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="art-deco"] {
+  --carta-face: linear-gradient(160deg, #fdf8ea, #f0e5c8);
+  --carta-anel: #111111;
+  --carta-moldura: rgba(201, 164, 76, 0.9);
+  --carta-fonte: var(--font-fraunces), Georgia, serif;
+  --cor-espadas: #111111;
+  --cor-copas: #a3172b;
+  --cor-ouros: #a3172b;
+  --cor-paus: #111111;
+  --verso-fundo: repeating-conic-gradient(from 180deg at 50% 105%, #c9a44c 0 5deg, #111111 5deg 15deg);
+  --verso-base: #111111;
+  --verso-moldura: rgba(201, 164, 76, 0.95);
+  --verso-borda: #c9a44c;
+  --verso-emblema: "◆";
+  --verso-emblema-cor: #e8cf8a;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="cartografia"] {
+  --carta-face: linear-gradient(160deg, #f3e7c9, #e3d0a4);
+  --carta-anel: #7a5a32;
+  --carta-moldura: rgba(122, 90, 50, 0.4);
+  --carta-fonte: var(--font-fraunces), Georgia, serif;
+  --cor-espadas: #3b2a1a;
+  --cor-copas: #9c3a22;
+  --cor-ouros: #9c3a22;
+  --cor-paus: #3b2a1a;
+  --verso-fundo:
+    repeating-radial-gradient(circle at 30% 40%, transparent 0 0.3em, rgba(90, 60, 30, 0.38) 0.3em 0.34em),
+    repeating-radial-gradient(circle at 75% 70%, transparent 0 0.26em, rgba(40, 90, 110, 0.3) 0.26em 0.3em),
+    linear-gradient(160deg, #e9d7ad, #cdb27c);
+  --verso-base: #d6bf8c;
+  --verso-moldura: rgba(90, 60, 30, 0.55);
+  --verso-borda: #f6ecd2;
+  --verso-emblema: "✣";
+  --verso-emblema-cor: #5a3c1e;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="vitral"] {
+  --carta-face: #fdfdfb;
+  --carta-anel: #1c1c22;
+  --carta-moldura: rgba(28, 28, 34, 0.35);
+  --cor-espadas: #1c1c22;
+  --cor-copas: #b8323a;
+  --cor-ouros: #b8323a;
+  --cor-paus: #1c1c22;
+  --verso-fundo:
+    linear-gradient(#1c1c22 0.04em, transparent 0.04em) 0 0 / 0.7em 0.7em,
+    linear-gradient(90deg, #1c1c22 0.04em, transparent 0.04em) 0 0 / 0.7em 0.7em,
+    conic-gradient(from 45deg, #b8323a 0 25%, #2b5fa8 0 50%, #e0b43a 0 75%, #2f8a55 0) 0 0 / 1.4em 1.4em;
+  --verso-base: #1c1c22;
+  --verso-moldura: rgba(255, 255, 255, 0.5);
+  --verso-borda: #1c1c22;
+  --verso-emblema: "❖";
+  --verso-emblema-cor: #fff7e0;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="carvao"] {
+  --carta-face: linear-gradient(160deg, #f4f2ec, #e4e0d6);
+  --carta-anel: #3a3a3a;
+  --carta-moldura: rgba(40, 40, 40, 0.25);
+  --cor-espadas: #262626;
+  --cor-copas: #7a3434;
+  --cor-ouros: #7a3434;
+  --cor-paus: #262626;
+  --verso-fundo:
+    radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.18), transparent 50%),
+    radial-gradient(ellipse at 70% 75%, rgba(0, 0, 0, 0.35), transparent 55%),
+    linear-gradient(160deg, #4a4a4a, #1f1f1f);
+  --verso-base: #2b2b2b;
+  --verso-moldura: rgba(240, 240, 240, 0.35);
+  --verso-borda: #e8e6e0;
+  --verso-emblema: "♣";
+  --verso-emblema-cor: rgba(240, 240, 240, 0.75);
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="jade"] {
+  --carta-face: linear-gradient(160deg, #f6f8f1, #e5ecdf);
+  --carta-anel: #2f7d62;
+  --carta-moldura: rgba(176, 141, 60, 0.6);
+  --cor-espadas: #143d30;
+  --cor-copas: #a8322e;
+  --cor-ouros: #a8322e;
+  --cor-paus: #143d30;
+  --verso-fundo:
+    repeating-linear-gradient(45deg, rgba(214, 180, 96, 0.4) 0 1px, transparent 1px 0.4em),
+    radial-gradient(circle at 40% 30%, #6fc4a3, #2f7d62 55%, #174a39);
+  --verso-base: #2f7d62;
+  --verso-moldura: rgba(214, 180, 96, 0.85);
+  --verso-borda: #f1e7c8;
+  --verso-emblema: "❁";
+  --verso-emblema-cor: #f1e0a8;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="safira"] {
+  --carta-face: linear-gradient(160deg, #f5f8fd, #e3eaf6);
+  --carta-anel: #1d3f8f;
+  --carta-moldura: rgba(29, 63, 143, 0.35);
+  --cor-espadas: #0e1f45;
+  --cor-copas: #b02a48;
+  --cor-ouros: #b02a48;
+  --cor-paus: #0e1f45;
+  --verso-fundo:
+    conic-gradient(from 0deg at 50% 50%, #1a3a8a, #2f5fd0, #12286a, #3a6fe0, #1a3a8a, #2a52b8, #12286a, #1a3a8a);
+  --verso-base: #12286a;
+  --verso-moldura: rgba(200, 220, 255, 0.6);
+  --verso-borda: #dfe8ff;
+  --verso-emblema: "◆";
+  --verso-emblema-cor: #e8f0ff;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="obsidiana"] {
+  --carta-face: linear-gradient(160deg, #18181b, #0b0b0d);
+  --carta-anel: #c9a44c;
+  --carta-moldura: rgba(201, 164, 76, 0.35);
+  --cor-espadas: #e6c87a;
+  --cor-copas: #ff7466;
+  --cor-ouros: #ff7466;
+  --cor-paus: #e6c87a;
+  --cor-ouros-4: #7fb2ff;
+  --cor-paus-4: #7ee0a2;
+  --verso-fundo:
+    linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.12) 48%, transparent 56%),
+    radial-gradient(ellipse at 50% 30%, #2a2a2e, #050506 80%);
+  --verso-base: #0b0b0d;
+  --verso-moldura: rgba(201, 164, 76, 0.8);
+  --verso-borda: #c9a44c;
+  --verso-emblema: "♠";
+  --verso-emblema-cor: #e6c87a;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+}
+
+[data-tema-baralho="cobre"] {
+  --carta-face: linear-gradient(160deg, #f8eddc, #ecd9bd);
+  --carta-anel: #b0643a;
+  --carta-moldura: rgba(76, 150, 128, 0.45);
+  --cor-espadas: #3a2416;
+  --cor-copas: #a8442a;
+  --cor-ouros: #a8442a;
+  --cor-paus: #3a2416;
+  --verso-fundo:
+    radial-gradient(circle at 15% 20%, rgba(90, 170, 145, 0.55), transparent 22%),
+    radial-gradient(circle at 85% 80%, rgba(90, 170, 145, 0.5), transparent 20%),
+    linear-gradient(150deg, #d08a55, #9a5530 60%, #6e3a20);
+  --verso-base: #9a5530;
+  --verso-moldura: rgba(255, 220, 190, 0.55);
+  --verso-borda: #f6dcc2;
+  --verso-emblema: "✶";
+  --verso-emblema-cor: #ffe3c8;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="luar"] {
+  --carta-face: linear-gradient(160deg, #f2f5fa, #e1e6ef);
+  --carta-anel: #8c98ab;
+  --carta-moldura: rgba(140, 152, 171, 0.45);
+  --cor-espadas: #2a3242;
+  --cor-copas: #b4405a;
+  --cor-ouros: #b4405a;
+  --cor-paus: #2a3242;
+  --verso-fundo:
+    radial-gradient(circle at 58% 45%, #2a3550 0 0.55em, transparent 0.56em),
+    radial-gradient(circle at 50% 50%, #e8edf6 0 0.62em, transparent 0.63em),
+    radial-gradient(ellipse at 50% 30%, #3a4a6a, #1a2236 85%);
+  --verso-base: #1f2840;
+  --verso-moldura: rgba(220, 228, 245, 0.55);
+  --verso-borda: #dfe5f0;
+  --verso-emblema: "";
+  --verso-emblema-cor: transparent;
+  --carta-fonte: var(--font-franklin), system-ui, sans-serif;
+  --traco-vermelhos: 0;
+  --cor-ouros-4: #1f62c4;
+  --cor-paus-4: #1b7a43;
+}
+
+[data-tema-baralho="mestres"] {
+  --carta-face: linear-gradient(160deg, #141416, #0a0a0b);
+  --carta-anel: #d8b35a;
+  --carta-moldura: rgba(216, 179, 90, 0.55);
+  --carta-fonte: var(--font-fraunces), Georgia, serif;
+  --cor-espadas: #f0d48a;
+  --cor-copas: #ff6b5e;
+  --cor-ouros: #ff6b5e;
+  --cor-paus: #f0d48a;
+  --cor-ouros-4: #86b8ff;
+  --cor-paus-4: #86e6ad;
+  --verso-fundo:
+    linear-gradient(115deg, transparent 35%, rgba(255, 230, 160, 0.22) 47%, transparent 59%) 0 0 / 300% 100%,
+    repeating-linear-gradient(45deg, rgba(216, 179, 90, 0.18) 0 1px, transparent 1px 0.3em),
+    radial-gradient(ellipse at 50% 30%, #222, #050505 85%);
+  --verso-base: #0a0a0b;
+  --verso-moldura: rgba(216, 179, 90, 0.9);
+  --verso-borda: #d8b35a;
+  --verso-emblema: "♚";
+  --verso-emblema-cor: #f0d48a;
+  --traco-vermelhos: 0;
+}
+[data-tema-baralho="mestres"] .verso-carta {
+  animation: brilho-mestres 6s ease-in-out infinite;
+}
+@keyframes brilho-mestres {
+  0%,
+  100% {
+    background-position: 100% 0, 0 0, 0 0;
+  }
+  50% {
+    background-position: 0% 0, 0 0, 0 0;
+  }
+}
+
+/* Baralho de 4 cores (Preferências) vale por cima de qualquer tema. */
+[data-baralho="4cores"],
+[data-baralho="4cores"] [data-tema-baralho] {
+  --cor-ouros: var(--cor-ouros-4);
+  --cor-paus: var(--cor-paus-4);
+}

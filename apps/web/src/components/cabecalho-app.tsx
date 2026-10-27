@@ -4,8 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { sair } from "@/app/(acesso)/acoes";
+import { classesBotao } from "./botao";
 import { Avatar, type AparenciaDemo } from "./ilustracoes/avatar";
+import { IndicadorConexao } from "./indicador-conexao";
 import { Marca } from "./marca";
+import { limparPaginasOffline } from "./registrar-sw";
 
 export interface UsuarioCabecalho {
   nome: string;
@@ -20,9 +23,12 @@ export interface UsuarioCabecalho {
 export function CabecalhoApp({
   links,
   usuario = null,
+  entrar = false,
 }: {
   links: { href: string; rotulo: string }[];
   usuario?: UsuarioCabecalho | null;
+  /** Mostra "Entrar" para quem não está logado (só quando as contas estão ativas). */
+  entrar?: boolean;
 }) {
   const caminho = usePathname();
   const [menuMovel, setMenuMovel] = useState(false);
@@ -61,7 +67,7 @@ export function CabecalhoApp({
       <div className="conteiner flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-8">
           <Marca />
-          <nav aria-label="Jogo" className="hidden md:block">
+          <nav aria-label="Jogo" className="hidden lg:block">
             <ul className="flex items-center gap-1">
               {links.map((l) => (
                 <li key={l.href}>
@@ -82,6 +88,12 @@ export function CabecalhoApp({
         </div>
 
         <div className="flex items-center gap-2">
+          <IndicadorConexao />
+          {!usuario && entrar && (
+            <Link href="/entrar" className={`${classesBotao("secundario", "md")} hidden sm:inline-flex`}>
+              Entrar
+            </Link>
+          )}
           {usuario && (
             <div ref={refMenu} className="relative hidden md:block">
               <button
@@ -115,7 +127,7 @@ export function CabecalhoApp({
                       {item.rotulo}
                     </Link>
                   ))}
-                  <form action={sair} className="border-t border-borda">
+                  <form action={sair} onSubmit={limparPaginasOffline} className="border-t border-borda">
                     <button type="submit" role="menuitem" className="w-full px-4 py-2.5 text-left text-sm text-perigo-claro transition-colors hover:bg-white/5">
                       Sair
                     </button>
@@ -127,7 +139,7 @@ export function CabecalhoApp({
 
           <button
             type="button"
-            className="rotulo flex h-10 items-center gap-2 rounded-(--radius-controle) border border-borda px-3 text-creme-100 md:hidden"
+            className="rotulo flex h-10 items-center gap-2 rounded-(--radius-controle) border border-borda px-3 text-creme-100 lg:hidden"
             aria-expanded={menuMovel}
             aria-controls="menu-app"
             onClick={() => setMenuMovel((v) => !v)}
@@ -138,9 +150,9 @@ export function CabecalhoApp({
       </div>
 
       {menuMovel && (
-        <nav id="menu-app" aria-label="Menu" className="animar-aviso border-t border-borda bg-superficie-1 md:hidden">
+        <nav id="menu-app" aria-label="Menu" className="animar-aviso border-t border-borda bg-superficie-1 lg:hidden">
           <ul className="conteiner flex flex-col py-2">
-            {[...links, ...(usuario ? itensUsuario : [])].map((l) => (
+            {[...links, ...(usuario ? itensUsuario : entrar ? [{ href: "/entrar", rotulo: "Entrar" }] : [])].map((l) => (
               <li key={l.href}>
                 <Link
                   href={l.href}
@@ -157,7 +169,7 @@ export function CabecalhoApp({
             ))}
             {usuario && (
               <li>
-                <form action={sair}>
+                <form action={sair} onSubmit={limparPaginasOffline}>
                   <button type="submit" className="w-full py-3.5 text-left font-display text-xl text-perigo-claro">
                     Sair
                   </button>

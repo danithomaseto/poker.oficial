@@ -43,6 +43,16 @@ export function rotuloAcao(tipo: TipoAcao, valor: number, allIn: boolean): strin
 
 export { fichas as formatarFichas };
 
+/**
+ * O histórico do motor guarda o all-in como aposta, aumento ou pagamento. Foi all-in quando é a
+ * última ação de um jogador que terminou sem fichas.
+ */
+export function foiAllIn(mao: EstadoMao, posicao: number): boolean {
+  const acao = mao.acoes[posicao];
+  if (!acao || !mao.jogadores[acao.indice]?.allIn || acao.tipo === "desistir" || acao.tipo === "passar") return false;
+  return !mao.acoes.slice(posicao + 1).some((a) => a.indice === acao.indice);
+}
+
 const NOMES_FASE = { preflop: "Pré-flop", flop: "Flop", turn: "Turn", river: "River", encerrada: "Fim" } as const;
 const SIMBOLOS: Record<string, string> = { s: "♠", h: "♥", d: "♦", c: "♣" };
 

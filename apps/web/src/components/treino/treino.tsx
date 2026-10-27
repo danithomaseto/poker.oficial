@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useIdentidadeLocal } from "@/lib/identidade-local";
 import { useAvisar } from "../avisos";
 import { NIVEIS } from "@poker/bots";
 import { EscolhaMesa } from "./escolha-mesa";
@@ -17,7 +18,8 @@ import { useMesaTreino } from "./use-mesa-treino";
  * Treino: lista de mesas ou a mesa em jogo. Mesas da casa ficam na URL (/treino?mesa=boteco),
  * então o lobby leva direto a elas e recarregar a página volta para a mesma mesa.
  */
-export function Treino({ jogador }: { jogador: JogadorTreino }) {
+export function Treino() {
+  const jogador = useIdentidadeLocal();
   const parametros = useSearchParams();
   const router = useRouter();
   const preset = MESAS_DA_CASA.find((m) => m.id === parametros.get("mesa")) ?? null;
@@ -38,7 +40,8 @@ export function Treino({ jogador }: { jogador: JogadorTreino }) {
   }
   return (
     <Partida
-      key={`${config.id}-${sessao}`}
+      // O nome guardado no aparelho só chega depois da hidratação: a mesa recomeça com ele.
+      key={`${config.id}-${sessao}-${jogador.nome}`}
       config={config}
       jogador={jogador}
       aoSair={() => {

@@ -13,3 +13,6 @@ next-env.d.ts
 *.pem
 npm-debug.log*
 .pnpm-debug.log*
+
+# Configuração pessoal do Supabase (ex.: email do dono): fica só nesta máquina
+*.local.sql

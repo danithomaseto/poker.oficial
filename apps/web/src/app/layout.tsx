@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, IBM_Plex_Mono, Libre_Franklin } from "next/font/google";
+import { AgenteSincronizacao } from "@/components/agente-sincronizacao";
 import { AplicarPreferencias } from "@/components/aplicar-preferencias";
+import { AvisoNivel } from "@/components/aviso-nivel";
 import { EfeitosGlobais } from "@/components/efeitos-globais";
+import { RegistrarServiceWorker } from "@/components/registrar-sw";
 import { site } from "@/config/site";
 import "./globals.css";
 
@@ -56,6 +59,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <EfeitosGlobais />
         <AplicarPreferencias />
+        <AvisoNivel />
+        <AgenteSincronizacao />
+        <RegistrarServiceWorker />
         {children}
       </body>
     </html>

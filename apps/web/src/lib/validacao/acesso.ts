@@ -63,8 +63,22 @@ export const resgateConviteSchema = z
     path: ["confirmacaoSenha"],
   });
 
+/** Primeiro acesso do dono: igual ao resgate, sem código (quem autoriza é o email no banco). */
+export const primeiroAcessoSchema = z
+  .object({
+    nome: nomeSchema,
+    email: emailSchema,
+    senha: senhaSchema,
+    confirmacaoSenha: z.string({ error: "Confirme sua senha." }),
+  })
+  .refine((dados) => dados.senha === dados.confirmacaoSenha, {
+    error: "As senhas não conferem.",
+    path: ["confirmacaoSenha"],
+  });
+
 export type DadosLogin = z.infer<typeof loginSchema>;
 export type DadosResgateConvite = z.infer<typeof resgateConviteSchema>;
+export type DadosPrimeiroAcesso = z.infer<typeof primeiroAcessoSchema>;
 
 /** Converte FormData em objeto simples, descartando arquivos e campos internos do React. */
 export function formDataParaObjeto(formData: FormData): Record<string, string> {

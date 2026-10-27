@@ -46,3 +46,17 @@ export function pedirDecisao(pedido: PedidoBot): Promise<Acao> {
     }, 4000);
   });
 }
+
+/**
+ * Baixa o script dos bots uma vez (o service worker guarda) para o treino funcionar offline
+ * mesmo que você ainda não tenha jogado com internet. O worker de aquecimento é descartado.
+ */
+export function aquecerBots(): void {
+  if (worker || typeof Worker === "undefined") return;
+  try {
+    const temporario = new Worker(new URL("./bot.worker.ts", import.meta.url), { type: "module" });
+    setTimeout(() => temporario.terminate(), 5000);
+  } catch {
+    // sem worker: os bots decidem na thread principal, nada a baixar
+  }
+}
