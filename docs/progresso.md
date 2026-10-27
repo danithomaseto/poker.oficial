@@ -9,7 +9,8 @@
 - [x] `packages/poker-engine`: cartas, avaliador de mãos, reducer da mão, side pots, projeção por jogador
 - [x] Testes do motor: regras, side pots com 3/4/5 all-ins, propriedades (fast-check)
 - [x] `packages/bots`: níveis fácil, médio, difícil e extremo
-- [ ] `/treino`: escolha de mesa (vários níveis e tamanhos) e mesa jogável contra bots
+- [x] `/treino`: escolha de mesa (vários níveis e tamanhos) e mesa jogável contra bots
+- [x] Redesign profissional da mesa (assentos, centro, fichas animadas, cartas, dock de ações)
 - [ ] Supabase: migração com perfis, convites, RLS e gatilho de cadastro só com convite
 - [ ] Login, resgate de convite e sair funcionando
 - [ ] `/jogo` (lobby do jogador) e proteção de rotas no `proxy.ts`

@@ -85,30 +85,29 @@ section {
 /* Peças visuais                                                       */
 /* ------------------------------------------------------------------ */
 
-/* Verso das cartas: losangos de latão sobre vinho. */
+/* Verso das cartas: vinho com treliça de latão, moldura e a espada da casa no centro. */
 .verso-carta {
-  background-color: #6a1f27;
+  position: relative;
+  background-color: #6e1d28;
   background-image:
-    linear-gradient(
-      45deg,
-      rgba(216, 191, 128, 0.22) 25%,
-      transparent 25%,
-      transparent 75%,
-      rgba(216, 191, 128, 0.22) 75%
-    ),
-    linear-gradient(
-      45deg,
-      rgba(216, 191, 128, 0.22) 25%,
-      transparent 25%,
-      transparent 75%,
-      rgba(216, 191, 128, 0.22) 75%
-    );
-  background-size: 22% 16%;
-  background-position:
-    0 0,
-    11% 8%;
-  border: 0.12em solid #f6efdc;
-  box-shadow: 0 0.2em 0.5em rgba(0, 0, 0, 0.4);
+    repeating-linear-gradient(45deg, rgba(216, 191, 128, 0.2) 0 1px, transparent 1px 0.28em),
+    repeating-linear-gradient(-45deg, rgba(216, 191, 128, 0.2) 0 1px, transparent 1px 0.28em),
+    radial-gradient(circle at 50% 50%, #8a2a35, #5a1620 75%);
+  border: 0.08em solid #f6efdc;
+  box-shadow:
+    inset 0 0 0 0.14em #6e1d28,
+    inset 0 0 0 0.19em rgba(216, 191, 128, 0.55),
+    0 0.2em 0.5em rgba(0, 0, 0, 0.45);
+}
+.verso-carta::after {
+  content: "♠";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(234, 220, 180, 0.8);
+  font-size: 1.15em;
+  line-height: 1;
 }
 
 /* Ruído por cima do fundo (o elemento precisa ser relative). */
@@ -168,6 +167,73 @@ section {
 /* Destaque em latão (sem gradiente nem brilho). */
 @utility texto-ouro {
   color: var(--color-ouro-300);
+}
+
+/* Slider de aposta: trilho de feltro e polegar de latão. */
+.slider-aposta {
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-ouro-400) 0 var(--preenchido, 0%),
+    rgba(243, 236, 216, 0.14) var(--preenchido, 0%) 100%
+  );
+  cursor: pointer;
+}
+.slider-aposta::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-ouro-200);
+  border: 3px solid var(--color-ouro-600);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.slider-aposta::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-ouro-200);
+  border: 3px solid var(--color-ouro-600);
+}
+.slider-aposta:focus-visible {
+  outline-offset: 6px;
+}
+
+/* Fichas voando para o pote (e do pote para quem ganhou). */
+@keyframes voar-fichas {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0.8);
+    opacity: 0;
+  }
+}
+.voo-fichas {
+  animation: voar-fichas 0.55s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+
+@keyframes anel-vez {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0.35em rgba(216, 191, 128, 0.95),
+      0 0 1.2em 0.2em rgba(216, 191, 128, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 0 0.35em rgba(216, 191, 128, 0.6),
+      0 0 0.6em 0.1em rgba(216, 191, 128, 0.15);
+  }
+}
+.anel-vez {
+  animation: anel-vez 1.6s ease-in-out infinite;
 }
 
 /* Picote do convite: semicírculos recortados nas bordas do canhoto. */
