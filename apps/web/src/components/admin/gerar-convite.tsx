@@ -37,14 +37,14 @@ export function GerarConvite({ urlDoSite }: { urlDoSite: string }) {
             name="observacao"
             maxLength={60}
             placeholder="Ex.: Juninho da faculdade"
-            className="h-12 w-full rounded-[5px] border border-white/15 bg-black/30 px-3.5 text-creme-50 placeholder:text-creme-500 focus:border-ouro-300"
+            className="h-12 w-full rounded-(--radius-controle) border border-borda-forte bg-black/30 px-3.5 text-creme-50 placeholder:text-creme-500 focus:border-ouro-300"
           />
         </label>
         <button type="submit" disabled={gerando} className={classesBotao("primario", "lg")}>
           {gerando ? "Gerando…" : "Gerar convite"}
         </button>
         {resultado.status === "erro" && (
-          <p className="text-sm text-[#f39a96]">{resultado.mensagem}</p>
+          <p className="text-sm text-perigo-claro">{resultado.mensagem}</p>
         )}
       </form>
 

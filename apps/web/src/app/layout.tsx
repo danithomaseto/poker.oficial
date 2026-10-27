@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, IBM_Plex_Mono, Libre_Franklin } from "next/font/google";
+import { AplicarPreferencias } from "@/components/aplicar-preferencias";
 import { EfeitosGlobais } from "@/components/efeitos-globais";
 import { site } from "@/config/site";
 import "./globals.css";
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Pular para o conteúdo
         </a>
         <EfeitosGlobais />
+        <AplicarPreferencias />
         {children}
       </body>
     </html>

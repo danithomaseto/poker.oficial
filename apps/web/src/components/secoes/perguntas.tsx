@@ -101,8 +101,7 @@ const conversa: { de: keyof typeof amigos; pergunta: string; resposta: string }[
   {
     de: "teo",
     pergunta: "e se minha internet cair no meio da mão?",
-    resposta:
-      "Sua cadeira fica guardada uns 3 minutos. Na sua vez o jogo passa ou desiste por você até voltar.",
+    resposta: "Quando as mesas online abrirem, sua cadeira fica guardada uns 3 minutos. No treino não tem problema: tudo roda no seu aparelho.",
   },
   {
     de: "bia",
@@ -112,7 +111,7 @@ const conversa: { de: keyof typeof amigos; pergunta: string; resposta: string }[
   {
     de: "caio",
     pergunta: "dá pra treinar sozinho antes?",
-    resposta: "Vai dar: treino contra bots e tutorial estão no cardápio, rodando até sem internet.",
+    resposta: "Dá! Tem o treino contra bots, do Fácil ao Extremo, em seis mesas ou numa montada por você.",
   },
 ];
 

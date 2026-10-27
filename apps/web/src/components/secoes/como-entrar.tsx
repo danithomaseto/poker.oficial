@@ -25,7 +25,8 @@ const passos: Passo[] = [
     numero: "3",
     naipe: "ouros",
     titulo: "Puxe a cadeira",
-    texto: "Senta numa mesa, joga e zoa no chat. Pra falar, todo mundo no Discord, como já é hoje.",
+    texto:
+      "Escolhe uma mesa e joga: o treino contra bots já está aberto. Pra falar, todo mundo no Discord, como já é hoje.",
     giro: "lg:rotate-[5deg] lg:translate-y-6",
   },
 ];

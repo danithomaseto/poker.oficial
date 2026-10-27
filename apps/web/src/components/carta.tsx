@@ -32,7 +32,8 @@ export function Carta({
   style,
 }: Props) {
   const naipe = naipes[carta.naipe];
-  const cor = naipe.vermelho ? "text-[#c22d2a]" : "text-[#16191a]";
+  // A cor vem do CSS (--cor-espadas, --cor-copas...), para o baralho de 4 cores valer em tudo.
+  const cor = "text-(--cor-naipe)";
 
   return (
     <span
@@ -41,7 +42,15 @@ export function Carta({
       className={`relative inline-block shrink-0 perspective-[600px] transition-[opacity,translate,filter] duration-300 ${
         apagada ? "opacity-40 saturate-50" : ""
       } ${destaque ? "-translate-y-[0.18em]" : ""} ${className ?? ""}`}
-      style={{ width: largura, aspectRatio: "5 / 7", fontSize: `calc(${largura} * 0.3)`, ...style }}
+      style={
+        {
+          width: largura,
+          aspectRatio: "5 / 7",
+          fontSize: `calc(${largura} * 0.3)`,
+          "--cor-naipe": `var(--cor-${carta.naipe})`,
+          ...style,
+        } as CSSProperties
+      }
     >
       <span
         className={`absolute inset-0 transform-3d ${virar ? "animar-virar" : ""}`}

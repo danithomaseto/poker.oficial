@@ -34,6 +34,22 @@
   --color-tinta-suave: #4a5048;
   --color-naipe-vermelho: #b5332f;
 
+  /* Superfícies do app (sala, painéis, campos) e bordas: uma escala só para tudo. */
+  --color-sala: #050d0a;
+  --color-superficie-1: #0b120f;
+  --color-superficie-2: #111a16;
+  --color-superficie-3: #1a241f;
+  --color-borda: rgba(243, 236, 216, 0.12);
+  --color-borda-forte: rgba(243, 236, 216, 0.28);
+  --color-perigo: #b5332f;
+  --color-perigo-claro: #f39a96;
+  --color-sucesso: #2c8259;
+
+  /* Raios padronizados */
+  --radius-controle: 5px;
+  --radius-cartao: 8px;
+  --radius-painel: 12px;
+
   --font-sans: var(--font-franklin);
   --font-display: var(--font-fraunces);
   --font-mono: var(--font-plex-mono);
@@ -44,6 +60,11 @@
 
 :root {
   color-scheme: dark;
+  /* Cores dos naipes nas cartas; o baralho de 4 cores troca ouros e paus. */
+  --cor-espadas: #16191a;
+  --cor-copas: #c22d2a;
+  --cor-ouros: #c22d2a;
+  --cor-paus: #16191a;
   /* Atualizadas pelo componente EfeitosGlobais. */
   --rolagem: 0;
   --ponteiro-x: 0;
@@ -54,6 +75,11 @@
  * Tipografia fluida: em telas largas tudo que usa rem cresce junto
  * (16px até ~1100px de largura, chegando a 20px em monitores 2K/4K).
  */
+[data-baralho="4cores"] {
+  --cor-ouros: #1f62c4;
+  --cor-paus: #1b7a43;
+}
+
 html {
   font-size: clamp(16px, 0.36vw + 12px, 20px);
   scroll-behavior: smooth;
@@ -692,6 +718,36 @@ section {
 /* ------------------------------------------------------------------ */
 /* Movimento reduzido: mantém o conteúdo, remove o movimento           */
 /* ------------------------------------------------------------------ */
+
+/* Preferência "reduzir animações" do próprio jogo (Preferências), além da do sistema. */
+[data-movimento="reduzido"] *,
+[data-movimento="reduzido"] *::before,
+[data-movimento="reduzido"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+@keyframes girar-indicador {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes entrar-aviso {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animar-aviso {
+  animation: entrar-aviso 0.25s var(--ease-saida) both;
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {

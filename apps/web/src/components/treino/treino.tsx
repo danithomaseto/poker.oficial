@@ -1,31 +1,52 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useAvisar } from "../avisos";
 import { NIVEIS } from "@poker/bots";
 import { EscolhaMesa } from "./escolha-mesa";
 import type { JogadorTreino } from "./jogador-padrao";
 import { MesaJogo } from "./mesa-jogo";
-import type { ConfigTreino } from "./mesas";
+import { MESAS_DA_CASA, type ConfigTreino } from "./mesas";
 import { PainelAcoes } from "./painel-acoes";
-import { formatarFichas } from "./textos";
+import { formatarFichas, linhasDaMao, type LinhaLog } from "./textos";
 import { useMesaTreino } from "./use-mesa-treino";
 
+/**
+ * Treino: lista de mesas ou a mesa em jogo. Mesas da casa ficam na URL (/treino?mesa=boteco),
+ * então o lobby leva direto a elas e recarregar a página volta para a mesma mesa.
+ */
 export function Treino({ jogador }: { jogador: JogadorTreino }) {
-  const [config, setConfig] = useState<ConfigTreino | null>(null);
+  const parametros = useSearchParams();
+  const router = useRouter();
+  const preset = MESAS_DA_CASA.find((m) => m.id === parametros.get("mesa")) ?? null;
+  const [personalizada, setPersonalizada] = useState<ConfigTreino | null>(null);
   const [sessao, setSessao] = useState(0);
+  const config = personalizada ?? preset;
 
   if (!config) {
     return (
       <EscolhaMesa
         aoEscolher={(c) => {
-          setConfig(c);
           setSessao((s) => s + 1);
-          window.scrollTo({ top: 0 });
+          if (c.id === "personalizada") setPersonalizada(c);
+          else router.push(`/treino?mesa=${c.id}`, { scroll: true });
         }}
       />
     );
   }
-  return <Partida key={sessao} config={config} jogador={jogador} aoSair={() => setConfig(null)} />;
+  return (
+    <Partida
+      key={`${config.id}-${sessao}`}
+      config={config}
+      jogador={jogador}
+      aoSair={() => {
+        setPersonalizada(null);
+        router.push("/treino");
+      }}
+    />
+  );
 }
 
 function Partida({
@@ -39,10 +60,22 @@ function Partida({
 }) {
   const mesa = useMesaTreino(config, jogador);
   const [verHistorico, setVerHistorico] = useState(false);
+
+  // Avisos da mesa (bot quebrou e foi trocado) vão para as notificações do app.
+  const avisar = useAvisar();
+  const avisados = useRef(new Set<string>());
+  useEffect(() => {
+    for (const aviso of mesa.avisos) {
+      if (!avisados.current.has(aviso)) {
+        avisados.current.add(aviso);
+        avisar("info", aviso);
+      }
+    }
+  }, [mesa.avisos, avisar]);
   const nivel = config.nivel === "misto" ? "Misto" : NIVEIS[config.nivel].nome;
 
   return (
-    <div className="flex h-[calc(100dvh-4rem)] flex-col bg-[#050d0a]">
+    <div className="flex h-[calc(100dvh-4rem)] flex-col bg-sala">
       <div className="relative flex min-h-0 flex-1">
         <div className="relative min-w-0 flex-1">
           <MesaJogo mesa={mesa} />
@@ -70,23 +103,15 @@ function Partida({
               <BotaoBarra onClick={() => setVerHistorico((v) => !v)} ativo={verHistorico}>
                 Histórico
               </BotaoBarra>
+              <Link
+                href="/jogo/preferencias"
+                className="rotulo rounded-[5px] border border-white/15 bg-black/45 px-3 py-2 text-creme-100 backdrop-blur-sm transition-colors hover:border-white/40"
+              >
+                Preferências
+              </Link>
               <BotaoBarra onClick={aoSair}>Sair</BotaoBarra>
             </div>
           </div>
-
-          {/* Avisos (bots que quebraram e foram substituídos) */}
-          {mesa.avisos.length > 0 && (
-            <div className="pointer-events-none absolute top-20 left-1/2 z-20 flex w-[min(90%,32rem)] -translate-x-1/2 flex-col gap-2">
-              {mesa.avisos.slice(0, 2).map((a) => (
-                <p
-                  key={a}
-                  className="animar-mensagem rounded-[6px] bg-creme-50/95 px-4 py-2 text-center text-sm text-tinta shadow-lg"
-                >
-                  {a}
-                </p>
-              ))}
-            </div>
-          )}
 
           {/* Placar da sessão */}
           <dl className="absolute bottom-3 left-3 z-20 hidden gap-4 rounded-[6px] bg-black/45 px-3 py-2 font-mono text-xs text-creme-300 backdrop-blur-sm sm:flex">
@@ -110,34 +135,38 @@ function Partida({
         {verHistorico && (
           <aside
             aria-label="Histórico de mãos"
-            className="animar-mensagem absolute inset-y-0 right-0 z-20 w-[min(100%,24rem)] overflow-y-auto border-l border-ouro-400/25 bg-mesa-950/95 p-5"
+            className="animar-aviso absolute inset-y-0 right-0 z-30 flex w-[min(100%,24rem)] flex-col border-l border-borda bg-superficie-1/97 backdrop-blur"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between border-b border-borda px-5 py-4">
               <h2 className="font-display text-2xl text-creme-50">Histórico</h2>
               <button
                 type="button"
                 onClick={() => setVerHistorico(false)}
-                className="rotulo text-creme-300 hover:text-creme-50"
+                className="rotulo rounded-(--radius-controle) border border-borda px-2.5 py-1.5 text-creme-300 hover:text-creme-50"
               >
                 Fechar
               </button>
             </div>
-            {mesa.historico.length === 0 && (
-              <p className="mt-4 text-sm text-creme-300">Nenhuma mão terminou ainda.</p>
-            )}
-            <ol className="mt-4 space-y-5">
-              {mesa.historico.map((h) => (
-                <li key={h.numero} className="border-t border-ouro-400/20 pt-3">
-                  <p className="rotulo text-ouro-300">Mão #{h.numero}</p>
-                  <p className="mt-1 text-sm text-creme-50">{h.resumo}</p>
-                  <ul className="mt-2 space-y-0.5 text-xs text-creme-300">
-                    {h.linhas.map((l, i) => (
-                      <li key={i}>{l}</li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ol>
+            <div className="flex-1 space-y-6 overflow-y-auto p-5">
+              {mesa.mao && mesa.mao.fase !== "encerrada" && (
+                <section aria-label="Mão atual">
+                  <p className="rotulo text-ouro-300">Agora</p>
+                  <LogMao linhas={linhasDaMao(mesa.mao, mesa.cartasVisiveis, "Você")} />
+                </section>
+              )}
+              {mesa.historico.length === 0 ? (
+                <p className="text-sm text-creme-300">Nenhuma mão terminou ainda.</p>
+              ) : (
+                <ol className="space-y-5">
+                  {mesa.historico.map((h) => (
+                    <li key={h.numero} className="border-t border-borda pt-3">
+                      <p className="text-sm font-semibold text-creme-50">{h.resumo}</p>
+                      <LogMao linhas={h.linhas} />
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
           </aside>
         )}
       </div>
@@ -169,5 +198,18 @@ function BotaoBarra({
     >
       {children}
     </button>
+  );
+}
+
+/** Linhas do log: mensagens do sistema (ruas, botão) destacadas das ações dos jogadores. */
+function LogMao({ linhas }: { linhas: LinhaLog[] }) {
+  return (
+    <ul className="mt-2 space-y-1 text-[0.8rem] leading-snug">
+      {linhas.map((l, i) => (
+        <li key={i} className={l.tipo === "sistema" ? "pt-1 font-mono text-[0.72rem] text-ouro-200/80" : "text-creme-300"}>
+          {l.texto}
+        </li>
+      ))}
+    </ul>
   );
 }

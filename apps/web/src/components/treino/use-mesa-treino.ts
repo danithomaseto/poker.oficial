@@ -18,7 +18,8 @@ import { paletaDemo, type AparenciaDemo } from "../ilustracoes/avatar";
 import { aleatorio01, inteiroAleatorio } from "./aleatorio";
 import { pedirDecisao } from "./executar-bot";
 import { nivelDoBot, type ConfigTreino } from "./mesas";
-import { descreverAcao } from "./textos";
+import { usePreferencias } from "@/lib/preferencias";
+import { linhasDaMao, type LinhaLog } from "./textos";
 
 /**
  * Controlador da mesa de treino: roda o motor e os bots inteiramente no navegador.
@@ -37,7 +38,7 @@ export interface Lugar {
 
 export interface LinhaHistorico {
   numero: number;
-  linhas: string[];
+  linhas: LinhaLog[];
   resumo: string;
 }
 
@@ -119,7 +120,9 @@ export function useMesaTreino(
   const [cartasVisiveis, setCartasVisiveis] = useState(0);
   const [pensando, setPensando] = useState<number | null>(null);
   const [pausado, setPausado] = useState(false);
-  const [velocidade, setVelocidade] = useState<Velocidade>("normal");
+  const [preferencias] = usePreferencias();
+  const [velocidadeEscolhida, setVelocidadeEscolhida] = useState<Velocidade | null>(null);
+  const velocidade = velocidadeEscolhida ?? preferencias.velocidadeBots;
   const [avisos, setAvisos] = useState<string[]>([]);
   const [historico, setHistorico] = useState<LinhaHistorico[]>([]);
   const [estatisticas, setEstatisticas] = useState<Estatisticas>({
@@ -282,16 +285,7 @@ export function useMesaTreino(
       })
       .join(" · ");
     setHistorico((h) =>
-      [
-        {
-          numero: mao.numero,
-          resumo,
-          linhas: mao.acoes.map(
-            (a) => `${nome(a.indice)} ${descreverAcao(a.tipo, a.valor, false)}`,
-          ),
-        },
-        ...h,
-      ].slice(0, 25),
+      [{ numero: mao.numero, resumo, linhas: linhasDaMao(mao, mao.board.length, "Você") }, ...h].slice(0, 25),
     );
 
     setAguardandoProxima(true);
@@ -299,10 +293,10 @@ export function useMesaTreino(
 
   // Próxima mão automática depois de alguns segundos (se não estiver pausado).
   useEffect(() => {
-    if (!aguardandoProxima || pausado || voceSemFichas) return;
+    if (!aguardandoProxima || pausado || voceSemFichas || !preferencias.avancoAutomatico) return;
     const id = window.setTimeout(comecarMao, 4200 * fator);
     return () => window.clearTimeout(id);
-  }, [aguardandoProxima, pausado, voceSemFichas, comecarMao, fator]);
+  }, [aguardandoProxima, pausado, voceSemFichas, comecarMao, fator, preferencias.avancoAutomatico]);
 
   const indiceVoce = mao ? mao.jogadores.findIndex((j) => j.id === ID_VOCE) : -1;
   const visao = useMemo(
@@ -361,7 +355,8 @@ export function useMesaTreino(
     proximaMao: comecarMao,
     recomprar,
     alternarPausa: () => setPausado((p) => !p),
-    alternarVelocidade: () => setVelocidade((v) => (v === "normal" ? "rapida" : "normal")),
+    alternarVelocidade: () => setVelocidadeEscolhida(velocidade === "normal" ? "rapida" : "normal"),
+    avancoAutomatico: preferencias.avancoAutomatico,
   };
 }
 

@@ -53,7 +53,7 @@ export function RegrasDaCasa() {
                 Regras da casa. <span className="text-ouro-300 italic">Valem pra todo mundo.</span>
               </>
             }
-            descricao="Entre amigos a zoeira é garantida, mas a mesa tem que ser justa. Isso aqui não muda com o tempo."
+            descricao="Entre amigos a zoeira é garantida, mas a mesa tem que ser justa. As regras de servidor valem para as mesas online; no treino, o baralho é embaralhado no seu aparelho com gerador criptográfico."
           />
           <div data-revelar="zoom" className="hidden lg:block">
             <FichaGirando className="size-44 2xl:size-56" />

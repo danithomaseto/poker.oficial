@@ -19,6 +19,18 @@
 - [x] Guia de configuração do Supabase na Vercel (`docs/supabase.md`)
 - [x] Lint, tipos, testes e build passando; commit e push
 
+## Redesign do sistema (27/10/2026)
+
+- [x] Tokens de superfície, borda e raio; carregamento e notificações padronizados
+- [x] Cabeçalho do app com página ativa, menu no celular e menu do usuário
+- [x] Lobby com lista de mesas, filtro por nível e link direto (`/treino?mesa=...`)
+- [x] Preferências reais em `/jogo/preferencias` (4 cores, dicas, bots rápidos, próxima mão automática, reduzir animações)
+- [x] Log da mão atual com mensagens do sistema; admin com retorno de erro; vitrine `/dev/vitrine` (só em dev)
+- [x] Home com conteúdo fiel ao que existe; mesa da home alinhada à mesa real
+- [ ] Conferir carteirinha compacta do lobby (avatar aparecia apagado na vitrine)
+- [ ] Conferir menu do app no celular e a página de preferências no navegador
+- [ ] Relatório final do redesign para o usuário
+
 ## Depende de você
 
 - [ ] Seguir `docs/supabase.md` (criar o banco, rodar a migração, criar a conta de dono, redeploy)

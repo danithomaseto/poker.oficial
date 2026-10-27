@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { avaliar, descreverMao } from "@poker/engine";
+import { usePreferencias } from "@/lib/preferencias";
 import { classesBotao } from "../botao";
 import { Carta } from "../carta";
 import { paraVisual } from "./mesa-jogo";
@@ -14,6 +15,7 @@ import { formatarFichas } from "./textos";
  */
 export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => void }) {
   const { acoesValidas: v, visao, suaVez } = mesa;
+  const [preferencias] = usePreferencias();
   const faixa = v?.apostar ?? v?.aumentar ?? null;
   const campo = useRef<HTMLInputElement>(null);
 
@@ -59,10 +61,10 @@ export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => 
   });
 
   const minhaMao =
-    eu?.cartas && visao && mesa.cartasVisiveis >= 3
+    preferencias.dicasTreino && eu?.cartas && visao && mesa.cartasVisiveis >= 3
       ? descreverMao(avaliar([...eu.cartas, ...visao.board.slice(0, mesa.cartasVisiveis)]))
       : null;
-  const odds = suaVez && pagar > 0 ? Math.round((pagar / (pote + pagar)) * 100) : null;
+  const odds = preferencias.dicasTreino && suaVez && pagar > 0 ? Math.round((pagar / (pote + pagar)) * 100) : null;
 
   const base = visao?.apostaAtual ?? 0;
   const atalhos = faixa
@@ -99,7 +101,7 @@ export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => 
             </p>
             <p className="mt-0.5 truncate text-sm text-creme-300" aria-live="polite">
               {mesa.erro ? (
-                <span className="text-[#f39a96]">{mesa.erro}</span>
+                <span className="text-perigo-claro">{mesa.erro}</span>
               ) : odds !== null ? (
                 <>
                   Pagar {formatarFichas(pagar)} para um pote de {formatarFichas(pote)}: vale se você
@@ -206,7 +208,7 @@ export function PainelAcoes({ mesa, aoSair }: { mesa: MesaTreino; aoSair: () => 
         ) : mesa.aguardandoProxima ? (
           <div className="flex items-center gap-4 lg:justify-end">
             <p className="text-sm text-creme-300">
-              {mesa.pausado ? "Mesa pausada." : "Próxima mão em instantes"}
+              {mesa.pausado ? "Mesa pausada." : mesa.avancoAutomatico ? "Próxima mão em instantes" : "Mão encerrada."}
             </p>
             <button
               type="button"
@@ -258,9 +260,9 @@ function BotaoAcao({
 }): ReactNode {
   const estilos = {
     desistir:
-      "border-[#5a2a28] bg-transparent text-[#f0a29d] hover:border-[#b5332f] hover:bg-[#b5332f]/12",
+      "border-perigo/45 bg-transparent text-perigo-claro hover:border-perigo hover:bg-perigo/12",
     neutro:
-      "border-[#2f3a34] bg-[#1a221e] text-creme-50 hover:border-creme-100/40 hover:bg-[#222c27]",
+      "border-borda-forte bg-superficie-3 text-creme-50 hover:border-creme-100/40 hover:bg-[#222c27]",
     principal:
       "border-ouro-600 border-b-[3px] bg-ouro-300 text-tinta hover:bg-ouro-200 active:border-b",
   } as const;
@@ -269,7 +271,7 @@ function BotaoAcao({
       type="button"
       onClick={onClick}
       disabled={desabilitado}
-      className={`group/acao relative flex h-14 min-w-[8.5rem] flex-col items-center justify-center rounded-[6px] border px-4 leading-tight font-semibold transition-[background-color,border-color,translate] duration-150 active:translate-y-[2px] disabled:pointer-events-none disabled:opacity-50 sm:min-w-[10rem] ${estilos[tipo]}`}
+      className={`group/acao relative flex h-14 min-w-[8.5rem] flex-col items-center justify-center rounded-(--radius-cartao) border px-4 leading-tight font-semibold transition-[background-color,border-color,translate] duration-150 active:translate-y-[2px] disabled:pointer-events-none disabled:opacity-50 sm:min-w-[10rem] ${estilos[tipo]}`}
     >
       <span className={valor ? "text-[0.78rem] tracking-wide uppercase opacity-80" : "text-base"}>
         {rotulo}

@@ -176,9 +176,9 @@ export function MesaAnimada() {
         <div className="absolute top-[18%] left-[10%] h-[70%] w-[80%] rounded-[50%] bg-black/60 blur-[4cqw]" />
 
         {/* Borda de madeira */}
-        <div className="absolute top-[13.6%] left-[7.9%] h-[70.8%] w-[84.2%] rounded-[50%] bg-[linear-gradient(160deg,#8a5a33,#4a2c18_55%,#2b190d)] p-[2.6cqw] shadow-[inset_0_0.4cqw_0.6cqw_rgba(255,255,255,0.18),inset_0_-0.6cqw_1cqw_rgba(0,0,0,0.5)]">
+        <div className="absolute top-[13.6%] left-[7.9%] h-[70.8%] w-[84.2%] rounded-[50%] bg-[linear-gradient(180deg,#3b2a1e_0%,#22170f_45%,#120c08_100%)] p-[2.6cqw] shadow-[inset_0_0.4cqw_0.6cqw_rgba(255,255,255,0.18),inset_0_-0.6cqw_1cqw_rgba(0,0,0,0.5)]">
           {/* Feltro */}
-          <div className="textura-feltro relative h-full w-full rounded-[50%] bg-[radial-gradient(ellipse_at_50%_40%,#1f7a50,#0f3d2a_60%,#0a2a1c)] shadow-[inset_0_0_3cqw_rgba(0,0,0,0.6)]">
+          <div className="textura-feltro relative h-full w-full rounded-[50%] bg-[radial-gradient(ellipse_65%_60%_at_50%_38%,#217a52_0%,#145a3c_45%,#0b3524_100%)] shadow-[inset_0_0_3cqw_rgba(0,0,0,0.6)]">
             <div className="absolute inset-[9%] rounded-[50%] border border-ouro-400/20" />
             <span className="absolute top-[64%] left-1/2 -translate-x-1/2 font-display text-[1.6cqw] tracking-[0.4em] text-ouro-300/25 uppercase">
               Mesa da turma
@@ -311,13 +311,6 @@ export function MesaAnimada() {
           <AssentoMesa key={i} assento={a} ordem={i} />
         ))}
 
-        {/* Balão de chat */}
-        <div
-          className="animar-balao absolute rounded-[1.2cqw] rounded-bl-none bg-creme-50 px-[1.2cqw] py-[0.6cqw] text-[1.4cqw] font-medium whitespace-nowrap text-mesa-950 shadow-lg"
-          style={{ left: "26%", top: "58%", animationDelay: "4.6s" }}
-        >
-          vai pagar ou vai correr? 😏
-        </div>
       </div>
     </div>
   );
@@ -369,7 +362,7 @@ function AssentoMesa({ assento, ordem }: { assento: Assento; ordem: number }) {
         style={{ animationDelay: `${ordem * 60 + 150}ms` }}
       >
         <span className="text-[1.35cqw] font-semibold">{nome}</span>
-        <span className={`text-[1.2cqw] tabular-nums ${voce ? "text-mesa-900" : "text-ouro-300"}`}>
+        <span className={`text-[1.2cqw] tabular-nums ${voce ? "text-ouro-200" : "text-ouro-200"}`}>
           {desistiu ? "desistiu" : fichas}
         </span>
       </div>

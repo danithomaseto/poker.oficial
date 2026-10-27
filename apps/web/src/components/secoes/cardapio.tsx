@@ -3,66 +3,45 @@ import { CabecalhoSecao } from "./cabecalho-secao";
 
 type Prato = { nome: string; detalhe: string; descricao: string };
 
-const naEstreia: Prato[] = [
+const jaNaMesa: Prato[] = [
+  {
+    nome: "Treino contra bots",
+    detalhe: "fácil a extremo",
+    descricao: "Seis mesas da casa ou a sua, de 2 a 9 lugares. Roda no seu aparelho e não conta na conta online.",
+  },
   {
     nome: "Texas Hold'em No-Limit",
     detalhe: "regra oficial",
-    descricao:
-      "Blinds, all-in, side pots, empate com ficha ímpar, heads-up certinho. Tudo testado antes da mesa abrir.",
+    descricao: "Blinds, all-in, side pots, empate com ficha ímpar, heads-up certinho. Motor testado com 48 testes.",
   },
   {
-    nome: "Mesa de até 9",
-    detalhe: "do heads-up à cheia",
-    descricao: "Quem senta no meio da mão entra na próxima.",
+    nome: "Carteirinha de sócio",
+    detalhe: "seu boneco",
+    descricao: "Nome na mesa e visual em camadas. Aparece no lobby e na sua cadeira.",
   },
   {
-    nome: "Chat na mesa",
-    detalhe: "só texto",
-    descricao: "Pra zoar o all-in alheio. A voz continua no Discord.",
+    nome: "Entrada por convite",
+    detalhe: "uso único",
+    descricao: "Cada código é de uma pessoa só. O dono gera, revoga e pode tirar o acesso de quem precisar.",
   },
   {
-    nome: "Boneco 2D",
-    detalhe: "só o nome é obrigatório",
-    descricao: "Já vem um visual escolhido; muda quando quiser.",
+    nome: "Preferências",
+    detalhe: "baralho de 4 cores",
+    descricao: "Bots rápidos, dicas de treino, próxima mão automática e menos animação.",
   },
+];
+
+const chegando: Prato[] = [
+  { nome: "Mesas online", detalhe: "até 9 da turma", descricao: "Servidor dando as cartas, cada um vendo só as próprias." },
+  { nome: "Chat na mesa", detalhe: "só texto", descricao: "Pra zoar o all-in alheio. A voz continua no Discord." },
   {
     nome: "Lugar guardado",
     detalhe: "3 minutos",
     descricao: "Caiu a internet? A cadeira espera e, na sua vez, passa ou desiste por você.",
   },
-  {
-    nome: "Controle do anfitrião",
-    detalhe: "blinds e tempo",
-    descricao: "Quem abre a mesa inicia, pausa e ajusta o ritmo.",
-  },
-];
-
-const depois: Prato[] = [
-  {
-    nome: "Treino contra bots",
-    detalhe: "fácil a extremo",
-    descricao: "Roda no navegador, até offline. Não conta na sua conta online.",
-  },
-  {
-    nome: "Tutorial jogando",
-    detalhe: "passo a passo",
-    descricao: "Mãos prontas que explicam cada decisão.",
-  },
-  {
-    nome: "Várias mesas",
-    detalhe: "com plateia",
-    descricao: "Quem só assiste nunca vê carta fechada de ninguém.",
-  },
-  {
-    nome: "Lojinha",
-    detalhe: "só visual",
-    descricao: "Moeda ganha jogando vira roupa e acessório. Nada que mude o jogo.",
-  },
-  {
-    nome: "Histórico de mãos",
-    detalhe: "com replay",
-    descricao: "Pra rever aquela mão que ninguém acreditou.",
-  },
+  { nome: "Controle do anfitrião", detalhe: "blinds e tempo", descricao: "Quem abre a mesa inicia, pausa e ajusta o ritmo." },
+  { nome: "Lojinha", detalhe: "só visual", descricao: "Moeda ganha jogando vira roupa e acessório. Nada que mude o jogo." },
+  { nome: "Tutorial jogando", detalhe: "passo a passo", descricao: "Mãos prontas que explicam cada decisão." },
 ];
 
 function Lista({
@@ -131,12 +110,12 @@ export function Cardapio() {
               Cardápio <span className="text-naipe-vermelho italic">da casa.</span>
             </>
           }
-          descricao="A estreia vem com o essencial bem feito: uma mesa online justa e que aguenta queda. O resto sai da cozinha aos poucos."
+          descricao="O que já dá para usar hoje e o que ainda está no forno. Sem promessa de enfeite: o que está na lista da esquerda funciona."
         />
 
         <div className="mt-16 grid gap-14 lg:grid-cols-2 lg:gap-20 2xl:gap-32">
-          <Lista titulo="Servido na estreia" nota="mvp" pratos={naEstreia} atrasoBase={0} />
-          <Lista titulo="Saindo da cozinha" nota="depois" pratos={depois} atrasoBase={150} />
+          <Lista titulo="Já na mesa" nota="disponível" pratos={jaNaMesa} atrasoBase={0} />
+          <Lista titulo="Saindo da cozinha" nota="próximas etapas" pratos={chegando} atrasoBase={150} />
         </div>
       </div>
     </section>

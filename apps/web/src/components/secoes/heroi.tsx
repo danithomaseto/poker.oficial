@@ -47,7 +47,8 @@ export function Heroi() {
             style={{ animationDelay: "600ms" }}
           >
             Texas Hold&apos;em entre amigos, sem baixar nada e sem dinheiro de verdade. Cada um com
-            seu boneco, o chat rolando na mesa e a resenha por voz no Discord, como sempre foi.
+            sua carteirinha, treino contra bots do Fácil ao Extremo e, em breve, mesas online com a
+            turma. A resenha por voz continua no Discord.
           </p>
 
           <div
@@ -60,6 +61,9 @@ export function Heroi() {
               className={classesBotao("primario", "lg")}
             >
               Resgatar meu convite
+            </Link>
+            <Link href="/treino" className={classesBotao("secundario", "lg")}>
+              Treinar contra bots
             </Link>
             <Link
               href={rotas.entrar}

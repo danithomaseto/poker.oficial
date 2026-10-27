@@ -14,6 +14,8 @@ type Props = {
   /** Muda quando a aparência muda, para animar a troca. */
   chaveAnimacao?: string | number;
   rodape?: ReactNode;
+  /** Versão menor, para colunas estreitas (lobby). */
+  compacta?: boolean;
   className?: string;
 };
 
@@ -28,6 +30,7 @@ export function Carteirinha({
   inclinada,
   chaveAnimacao,
   rodape,
+  compacta,
   className,
 }: Props) {
   const tons = {
@@ -51,10 +54,10 @@ export function Carteirinha({
             <span className="rotulo tabular-nums">Nº {String(numero).padStart(4, "0")}</span>
           </span>
         </div>
-        <div className="m-2.5 grid grid-cols-[auto_1fr] gap-4 border border-tinta/25 p-4 sm:gap-5 sm:p-5">
+        <div className={`m-2.5 grid grid-cols-[auto_1fr] border border-tinta/25 ${compacta ? "gap-3.5 p-3.5" : "gap-4 p-4 sm:gap-5 sm:p-5"}`}>
           <div
             key={chaveAnimacao}
-            className="animar-surgir size-24 overflow-hidden rounded-[6px] border-2 border-tinta sm:size-32"
+            className={`animar-surgir overflow-hidden rounded-[6px] border-2 border-tinta ${compacta ? "size-20" : "size-24 sm:size-32"}`}
           >
             <Avatar
               aparencia={aparencia}
@@ -67,12 +70,12 @@ export function Carteirinha({
               <dt className="rotulo text-tinta-suave">Nome na mesa</dt>
               <dd
                 key={`nome-${chaveAnimacao}`}
-                className="animar-mensagem truncate font-display text-2xl leading-tight font-semibold sm:text-3xl"
+                className={`animar-mensagem truncate font-display leading-tight font-semibold ${compacta ? "text-xl" : "text-2xl sm:text-3xl"}`}
               >
                 {nome}
               </dd>
             </div>
-            <div className="flex gap-6">
+            <div className={`flex ${compacta ? "gap-4" : "gap-6"}`}>
               <div>
                 <dt className="rotulo text-tinta-suave">Sócio desde</dt>
                 <dd className="font-mono text-sm">{desde}</dd>

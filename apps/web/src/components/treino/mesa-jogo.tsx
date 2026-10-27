@@ -164,7 +164,7 @@ export function MesaJogo({ mesa }: { mesa: MesaTreino }) {
   return (
     <div
       ref={ref}
-      className="relative h-full w-full overflow-hidden bg-[radial-gradient(ellipse_70%_60%_at_50%_42%,#123a2a_0%,#0a1f17_45%,#050d0a_100%)]"
+      className="relative h-full w-full overflow-hidden bg-[radial-gradient(ellipse_70%_60%_at_50%_42%,#123a2a_0%,#0a1f17_45%,var(--color-sala)_100%)]"
     >
       {w > 0 && (
         <>
@@ -553,7 +553,7 @@ function Assento({
 
         <div
           className={`relative -mt-[0.5em] flex flex-col items-center rounded-[0.45em] border px-[0.9em] pt-[0.35em] pb-[0.3em] leading-tight shadow-[0_0.3em_0.8em_rgba(0,0,0,0.55)] ${
-            voce ? "border-ouro-400/70 bg-[#141a16]" : "border-white/10 bg-[#0e1210]/95"
+            voce ? "border-ouro-400/70 bg-superficie-2" : "border-borda bg-superficie-1/95"
           } ${naVez ? "ring-1 ring-ouro-300/70" : ""}`}
           style={{ fontSize: fonteNome, minWidth: avatar * 1.55 }}
         >

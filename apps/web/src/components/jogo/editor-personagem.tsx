@@ -91,7 +91,7 @@ export function EditorPersonagem({
           atual={aparencia.acessorio}
           aoEscolher={(acessorio) => escolher({ acessorio })}
         />
-        {resultado?.erro && <p className="text-sm text-[#f39a96]">{resultado.erro}</p>}
+        {resultado?.erro && <p className="text-sm text-perigo-claro">{resultado.erro}</p>}
         <div className="flex flex-wrap items-center gap-3 border-t border-ouro-400/25 pt-5">
           <button type="submit" disabled={salvando} className={classesBotao("primario", "lg")}>
             {salvando ? "Salvando…" : "Salvar e ir para o lobby"}
