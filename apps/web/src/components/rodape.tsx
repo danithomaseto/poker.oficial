@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { rotas } from "@/config/site";
+import { Credito } from "./credito";
 import { Marca } from "./marca";
 
 export function Rodape() {
@@ -62,10 +63,10 @@ export function Rodape() {
       </div>
 
       <div className="border-t border-ouro-400/20">
-        <p className="conteiner rotulo flex flex-col gap-2 py-6 text-creme-500 sm:flex-row sm:justify-between">
-          <span>Fichas, prêmios e moedas sem valor real</span>
-          <span>Feito pela turma, pra turma</span>
-        </p>
+        <div className="conteiner flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="rotulo text-creme-500">Fichas, prêmios e moedas sem valor real</p>
+          <Credito className="rotulo text-creme-500" />
+        </div>
       </div>
     </footer>
   );

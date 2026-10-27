@@ -1,0 +1,21 @@
+{
+  "name": "@poker/bots",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Estratégias de bot (fácil a extremo) que decidem só com a visão do próprio jogador.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "@poker/engine": "workspace:*"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@poker/engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Regras puras de Texas Hold'em No-Limit: sem I/O, sem relógio, sem Math.random.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "bench": "vitest run avaliador.desempenho"
+  },
+  "devDependencies": {
+    "fast-check": "^4.10.2",
+    "typescript": "^5",
+    "vitest": "^5.0.5"
+  }
+}
