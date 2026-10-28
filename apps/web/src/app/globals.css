@@ -102,9 +102,12 @@ section {
 /* Peças visuais                                                       */
 /* ------------------------------------------------------------------ */
 
-/* Verso das cartas: desenho vem do tema equipado (app/temas-baralho.css). */
+/*
+ * Verso das cartas: desenho vem do tema equipado (app/temas-baralho.css). Sem `position` aqui:
+ * este CSS fica fora das camadas do Tailwind e anularia o `absolute` do verso dentro da carta
+ * (o verso virava uma caixinha no canto e o emblema aparecia por cima do índice).
+ */
 .verso-carta {
-  position: relative;
   background: var(--verso-fundo);
   background-color: var(--verso-base);
   border: 0.08em solid var(--verso-borda);

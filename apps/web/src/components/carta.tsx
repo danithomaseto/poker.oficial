@@ -97,7 +97,7 @@ export function VersoCarta({
   return (
     <span
       aria-hidden
-      className={`verso-carta inline-block shrink-0 rounded-[0.16em] ${className ?? ""}`}
+      className={`verso-carta relative inline-block shrink-0 rounded-[0.16em] ${className ?? ""}`}
       style={{ width: largura, aspectRatio: "5 / 7", fontSize: `calc(${largura} * 0.3)`, ...style }}
     />
   );
