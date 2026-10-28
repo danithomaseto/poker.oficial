@@ -11,39 +11,59 @@ import type { JogadorTreino } from "./jogador-padrao";
 import { MesaJogo } from "./mesa-jogo";
 import { MESAS_DA_CASA, type ConfigTreino } from "./mesas";
 import { PainelAcoes } from "./painel-acoes";
+import { descartarPartida, usePartidaSalva, type PartidaSalva } from "./partida-salva";
 import { formatarFichas, linhasDaMao, type LinhaLog } from "./textos";
 import { useMesaTreino } from "./use-mesa-treino";
 
 /**
- * Treino: lista de mesas ou a mesa em jogo. Mesas da casa ficam na URL (/treino?mesa=boteco),
- * então o lobby leva direto a elas e recarregar a página volta para a mesma mesa.
+ * Treino: lista de mesas ou a mesa em jogo. A mesa fica na URL (/treino?mesa=boteco), então o
+ * lobby leva direto a ela. A partida é salva a cada jogada: voltar para a mesma mesa (ou clicar
+ * em "Retomar partida") continua de onde parou, mesmo depois de fechar a aba.
  */
 export function Treino() {
   const jogador = useIdentidadeLocal();
   const parametros = useSearchParams();
   const router = useRouter();
-  const preset = MESAS_DA_CASA.find((m) => m.id === parametros.get("mesa")) ?? null;
+  const salva = usePartidaSalva();
+  const idMesa = parametros.get("mesa");
+  // A mesa personalizada não tem endereço próprio: retomá-la usa a configuração salva.
+  const preset =
+    idMesa === "personalizada"
+      ? salva?.config.id === "personalizada"
+        ? salva.config
+        : null
+      : (MESAS_DA_CASA.find((m) => m.id === idMesa) ?? null);
   const [personalizada, setPersonalizada] = useState<ConfigTreino | null>(null);
   const [sessao, setSessao] = useState(0);
   const config = personalizada ?? preset;
 
+  // Antes de o navegador dizer se há partida salva, não dá para decidir entre retomar e começar.
+  if (salva === undefined) return <p className="conteiner py-16 text-creme-300">Arrumando a mesa…</p>;
+
   if (!config) {
     return (
       <EscolhaMesa
+        salva={salva}
+        aoRetomar={() => salva && router.push(`/treino?mesa=${salva.config.id}`, { scroll: true })}
+        aoDescartar={descartarPartida}
         aoEscolher={(c) => {
           setSessao((s) => s + 1);
-          if (c.id === "personalizada") setPersonalizada(c);
-          else router.push(`/treino?mesa=${c.id}`, { scroll: true });
+          if (c.id === "personalizada") {
+            if (salva?.config.id === "personalizada") descartarPartida();
+            setPersonalizada(c);
+          } else router.push(`/treino?mesa=${c.id}`, { scroll: true });
         }}
       />
     );
   }
   return (
     <Partida
-      // O nome guardado no aparelho só chega depois da hidratação: a mesa recomeça com ele.
+      // O nome guardado no aparelho só chega depois da hidratação: a mesa recomeça com ele
+      // (e, como a partida é salva a cada jogada, continua de onde estava).
       key={`${config.id}-${sessao}-${jogador.nome}`}
       config={config}
       jogador={jogador}
+      salva={!personalizada && salva?.config.id === config.id ? salva : null}
       aoSair={() => {
         setPersonalizada(null);
         router.push("/treino");
@@ -55,13 +75,15 @@ export function Treino() {
 function Partida({
   config,
   jogador,
+  salva,
   aoSair,
 }: {
   config: ConfigTreino;
   jogador: JogadorTreino;
+  salva: PartidaSalva | null;
   aoSair: () => void;
 }) {
-  const mesa = useMesaTreino(config, jogador);
+  const mesa = useMesaTreino(config, jogador, salva);
   const [verHistorico, setVerHistorico] = useState(false);
 
   // Avisos da mesa (bot quebrou e foi trocado) vão para as notificações do app.

@@ -7,6 +7,7 @@ import { useNivelEfetivo } from "@/lib/progresso/sincronizacao";
 import { classesBotao } from "../botao";
 import { Carta, VersoCarta } from "../carta";
 import { c } from "../baralho";
+import { usePartidaSalva } from "../treino/partida-salva";
 import { MODULOS_TUTORIAL } from "../tutorial/modulos";
 import { BarraXp } from "./barra-xp";
 
@@ -17,6 +18,7 @@ export function ResumoProgresso() {
   const feitos = MODULOS_TUTORIAL.filter((m) => local.chaves.has(`tutorial:${m.id}`)).length;
   const proximo = MODULOS_TUTORIAL.find((m) => !local.chaves.has(`tutorial:${m.id}`));
   const baralho = baralhoPorId(preferencias.temaBaralho);
+  const salva = usePartidaSalva();
 
   return (
     <section aria-labelledby="titulo-progresso" className="grid gap-5 rounded-(--radius-painel) border border-borda bg-superficie-1/80 p-5 sm:p-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-8">
@@ -27,7 +29,12 @@ export function ResumoProgresso() {
         <BarraXp situacao={situacao} />
         {xpPendente > 0 && <p className="text-xs text-creme-500">{xpPendente} XP deste aparelho aguardando sincronizar.</p>}
         <div className="flex flex-wrap items-center gap-2">
-          <Link href="/tutorial" className={classesBotao(feitos === 0 ? "primario" : "secundario", "md")}>
+          {salva && (
+            <Link href={`/treino?mesa=${salva.config.id}`} className={classesBotao("primario", "md")}>
+              Retomar partida · {salva.config.nome}
+            </Link>
+          )}
+          <Link href="/tutorial" className={classesBotao(feitos === 0 && !salva ? "primario" : "secundario", "md")}>
             {feitos === 0 ? "Aprender a jogar" : proximo ? `Continuar tutorial (${feitos}/10)` : "Rever o tutorial ✓"}
           </Link>
           <Link href="/treino" className={classesBotao("secundario", "md")}>

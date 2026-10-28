@@ -22,6 +22,7 @@ import { usePreferencias } from "@/lib/preferencias";
 import { listarEventos } from "@/lib/progresso/idb";
 import { registrarEvento } from "@/lib/progresso/local";
 import { MAOS_OBJETIVO_DIARIO, MAOS_POR_SESSAO, diaSaoPaulo } from "@poker/progressao";
+import { salvarPartida, type PartidaSalva } from "./partida-salva";
 import { linhasDaMao, type LinhaLog } from "./textos";
 
 /**
@@ -114,36 +115,44 @@ const ATRASO_POR_NIVEL: Record<NivelBot, number> = {
   extremo: 1250,
 };
 
+/**
+ * `salva`: partida guardada neste aparelho para continuar de onde parou (mesma mão, fichas,
+ * histórico e sessão de XP). Só é lida ao montar.
+ */
 export function useMesaTreino(
   config: ConfigTreino,
   voce: { nome: string; aparencia: AparenciaDemo },
+  salva: PartidaSalva | null = null,
 ) {
-  const [lugares, setLugares] = useState<Lugar[]>(() => montarLugares(config, voce));
-  const [mao, setMao] = useState<EstadoMao | null>(null);
-  const [cartasVisiveis, setCartasVisiveis] = useState(0);
+  const [lugares, setLugares] = useState<Lugar[]>(() =>
+    salva
+      ? salva.lugares.map((l) => (l.tipo === "voce" ? { ...l, nome: voce.nome, aparencia: voce.aparencia } : l))
+      : montarLugares(config, voce),
+  );
+  const [mao, setMao] = useState<EstadoMao | null>(salva?.mao ?? null);
+  // Retomando, o board já aparece inteiro (sem refazer a animação das cartas).
+  const [cartasVisiveis, setCartasVisiveis] = useState(salva?.mao?.board.length ?? 0);
   const [pensando, setPensando] = useState<number | null>(null);
   const [pausado, setPausado] = useState(false);
   const [preferencias] = usePreferencias();
   const [velocidadeEscolhida, setVelocidadeEscolhida] = useState<Velocidade | null>(null);
   const velocidade = velocidadeEscolhida ?? preferencias.velocidadeBots;
   const [avisos, setAvisos] = useState<string[]>([]);
-  const [historico, setHistorico] = useState<LinhaHistorico[]>([]);
-  const [estatisticas, setEstatisticas] = useState<Estatisticas>({
-    maos: 0,
-    ganhas: 0,
-    maiorPote: 0,
-    recompras: 0,
-  });
+  const [historico, setHistorico] = useState<LinhaHistorico[]>(salva?.historico ?? []);
+  const [estatisticas, setEstatisticas] = useState<Estatisticas>(
+    salva?.estatisticas ?? { maos: 0, ganhas: 0, maiorPote: 0, recompras: 0 },
+  );
   const [erro, setErro] = useState<string | null>(null);
-  const [aguardandoProxima, setAguardandoProxima] = useState(false);
+  const [aguardandoProxima, setAguardandoProxima] = useState(salva?.mao?.fase === "encerrada");
 
-  const perfis = useRef<Perfis>({});
+  const perfis = useRef<Perfis>(salva?.perfis ?? {});
   // Sessão de treino: identifica as mãos para o XP (chave única por mão, sem pagar duas vezes).
-  const sessaoId = useRef<string>("");
-  const maosNaSessao = useRef(0);
-  const botaoAssento = useRef<number | null>(null);
-  const numeroMao = useRef(0);
-  const finalizada = useRef(0);
+  const sessaoId = useRef<string>(salva?.sessaoId ?? "");
+  const maosNaSessao = useRef(salva?.maosNaSessao ?? 0);
+  const botaoAssento = useRef<number | null>(salva?.botaoAssento ?? null);
+  const numeroMao = useRef(salva?.numeroMao ?? 0);
+  // Mão já contabilizada (fichas, estatísticas, XP): retomar não conta de novo.
+  const finalizada = useRef(salva?.finalizada ?? 0);
   const lugaresRef = useRef(lugares);
   useEffect(() => {
     lugaresRef.current = lugares;
@@ -206,8 +215,9 @@ export function useMesaTreino(
     setMao(estado);
   }, [bigBlindAtual, config.fichasIniciais]);
 
-  // Primeira mão ao sentar.
+  // Primeira mão ao sentar (retomando uma partida, a mão salva continua de onde parou).
   useEffect(() => {
+    if (salva?.mao) return;
     const id = window.setTimeout(comecarMao, 600);
     return () => window.clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- só ao montar
@@ -320,6 +330,24 @@ export function useMesaTreino(
     const id = window.setTimeout(comecarMao, 4200 * fator);
     return () => window.clearTimeout(id);
   }, [aguardandoProxima, pausado, voceSemFichas, comecarMao, fator, preferencias.avancoAutomatico]);
+
+  // Guarda a partida a cada jogada: sair da tela não perde nada.
+  useEffect(() => {
+    if (!mao) return;
+    salvarPartida({
+      config,
+      lugares,
+      mao,
+      numeroMao: numeroMao.current,
+      botaoAssento: botaoAssento.current,
+      finalizada: finalizada.current,
+      estatisticas,
+      historico,
+      sessaoId: sessaoId.current,
+      maosNaSessao: maosNaSessao.current,
+      perfis: perfis.current,
+    });
+  }, [config, lugares, mao, estatisticas, historico]);
 
   const indiceVoce = mao ? mao.jogadores.findIndex((j) => j.id === ID_VOCE) : -1;
   const visao = useMemo(
